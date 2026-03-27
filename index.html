@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>F1 Prediction League 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#05060b;
+  --bg2:#0b0f19;
+  --panel:#0c1020;
+  --panel2:#12172a;
+  --panel3:#171c31;
+  --line:#232944;
+  --line2:#31395d;
+  --text:#f6f8ff;
+  --muted:#98a0bf;
+  --soft:#c8cee3;
+  --red:#e10600;
+  --red2:#ff2b2b;
+  --cyan:#13d8ff;
+  --yellow:#ffd900;
+  --green:#3be374;
+  --shadow:0 18px 40px rgba(0,0,0,.28);
+}
+body{
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--text);
+  background:
+    linear-gradient(115deg, rgba(225,6,0,.06), transparent 18%, transparent 78%, rgba(225,6,0,.08) 100%),
+    repeating-linear-gradient(-28deg, rgba(42,56,94,.22) 0 2px, transparent 2px 68px),
+    linear-gradient(180deg,#04050a 0%,#070b12 50%,#05060a 100%);
+  min-height:100vh;
+}
+body:before{
+  content:"F1";
+  position:fixed;
+  top:22px;
+  right:42px;
+  font-size:150px;
+  font-weight:900;
+  line-height:1;
+  color:rgba(225,6,0,.09);
+  pointer-events:none;
+  letter-spacing:-8px;
+}
+.app{max-width:1280px;margin:0 auto;padding:28px 22px 44px}
+.hero{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:16px}
+.logo-box{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:108px;height:24px;background:var(--red);color:#fff;
+  font-size:12px;font-weight:900;letter-spacing:.3px;position:relative;
+  clip-path:polygon(0 0,100% 0,94% 100%,0 100%);
+}
+.logo-box span{transform:skewX(-10deg)}
+.title h1{font-size:54px;font-weight:900;letter-spacing:-2px;line-height:.95}
+.title p{margin-top:12px;color:var(--muted);font-size:16px}
+.live-pill{
+  display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border:1px solid var(--line2);
+  border-radius:999px;background:rgba(14,18,33,.72);box-shadow:var(--shadow)
+}
+.live-dot{width:10px;height:10px;border-radius:50%;background:var(--red2);box-shadow:0 0 18px rgba(255,43,43,.72)}
+.live-pill strong{font-size:13px}
+.sync-status{
+  margin-top:12px;padding:10px 14px;border:1px solid var(--line2);background:rgba(15,19,36,.85);font-size:12px;color:#c9d0e6
+}
+.tabs{
+  display:flex;gap:18px;border-bottom:1px solid var(--line2);padding-bottom:0;margin-bottom:20px;overflow:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  color:var(--muted);background:none;border:none;cursor:pointer;
+  padding:14px 20px;font-size:15px;font-weight:800;letter-spacing:-.2px;
+  border-bottom:3px solid transparent;white-space:nowrap
+}
+.tab.active{color:var(--text);border-color:var(--red)}
+.tab .icon{margin-right:8px}
+.top-line{height:3px;background:linear-gradient(90deg,var(--red),#ff5b57 40%,transparent 82%);margin-bottom:28px}
+.section{display:none}
+.section.active{display:block}
+.section-title{
+  display:flex;align-items:center;gap:12px;font-size:20px;font-weight:900;letter-spacing:-.6px;
+  margin-bottom:14px
+}
+.section-title:after{
+  content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--line2),transparent)
+}
+.sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+.card{
+  background:linear-gradient(180deg, rgba(15,19,36,.95), rgba(9,12,22,.96));
+  border:1px solid var(--line); border-radius:0;
+  box-shadow:var(--shadow); padding:18px 20px; margin-bottom:16px; position:relative; overflow:hidden
+}
+.card:before{
+  content:"";position:absolute;left:0;top:0;height:100%;width:3px;background:linear-gradient(180deg,var(--red),transparent 60%)
+}
+.card.soft:before{background:linear-gradient(180deg,var(--cyan),transparent 60%)}
+.card.gold:before{background:linear-gradient(180deg,var(--yellow),transparent 60%)}
+.card.green:before{background:linear-gradient(180deg,var(--green),transparent 60%)}
+.card-title{font-size:14px;font-weight:800;color:#c7cde0;margin-bottom:8px;letter-spacing:.2px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+label{font-size:12px;color:var(--muted);font-weight:700;min-width:72px}
+input,select,textarea{
+  background:#0a0d18;border:1px solid var(--line2);color:var(--text);
+  padding:12px 14px;border-radius:0;font-size:14px;min-width:120px;outline:none;
+}
+input:focus,select:focus,textarea:focus{border-color:#4b5a96;box-shadow:0 0 0 1px rgba(75,90,150,.25)}
+button{
+  background:#111527;border:1px solid var(--line2);color:var(--text);
+  padding:12px 16px;font-size:13px;font-weight:800;cursor:pointer;border-radius:0;transition:.16s ease
+}
+button:hover{background:#171d34}
+.btn-red{background:linear-gradient(90deg,#db0500,#ff372f);border-color:#ff5e59}
+.btn-red:hover{filter:brightness(1.06)}
+.btn-outline-red{border-color:rgba(255,55,47,.7);color:#ff908a}
+.grid{display:grid;gap:16px}
+.grid.two{grid-template-columns:1.15fr .85fr}
+.grid.three{grid-template-columns:repeat(3,1fr)}
+.grid.four{grid-template-columns:repeat(4,1fr)}
+.metric{
+  padding:18px 20px;min-height:122px;display:flex;flex-direction:column;justify-content:flex-end;
+  background:linear-gradient(180deg, rgba(11,14,25,.94), rgba(10,13,23,.96));border:1px solid var(--line)
+}
+.metric .lbl{font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.4px}
+.metric .num{font-size:54px;font-weight:900;line-height:1;margin:10px 0 8px;color:var(--cyan);letter-spacing:-2px}
+.metric .desc{font-size:14px;color:#7d87ab}
+.mini-pill{
+  display:inline-flex;align-items:center;gap:8px;padding:5px 10px;background:#0d1325;border:1px solid var(--line);
+  font-size:11px;font-weight:800;color:#d9dfef
+}
+.driver-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.driver-slot{background:#080b15;border:1px solid var(--line);padding:10px}
+.driver-slot .pos{font-size:11px;color:var(--muted);font-weight:800;margin-bottom:8px;letter-spacing:.3px}
+.driver-preview{min-height:34px;display:flex;align-items:center;justify-content:center;margin-top:8px}
+.driver-chip{
+  display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;font-size:12px;font-weight:900;
+  border:1px solid rgba(255,255,255,.1);white-space:nowrap;background:rgba(255,255,255,.04)
+}
+.driver-chip .dot{width:10px;height:10px;border-radius:50%}
+.team-chip{
+  display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--line2);background:#0b1020;font-size:11px;font-weight:800
+}
+.team-chip .dot{width:8px;height:8px;border-radius:50%}
+.stack{display:flex;flex-wrap:wrap;gap:8px}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:760px}
+th{
+  text-align:left;padding:12px 12px;color:#8f98ba;font-size:12px;font-weight:800;
+  border-bottom:1px solid var(--line2);text-transform:none;background:rgba(255,255,255,.02)
+}
+td{padding:14px 12px;border-bottom:1px solid rgba(43,51,82,.72);vertical-align:middle}
+tr:hover td{background:rgba(255,255,255,.015)}
+.rank-badge{
+  display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;
+  font-size:13px;font-weight:900;background:#171d30;border:1px solid #39425f
+}
+.rank-badge.r1{background:var(--yellow);color:#3c3100;border-color:#ffe96a}
+.rank-badge.r2{background:#d9dde8;color:#333746;border-color:#eef1f8}
+.rank-badge.r3{background:#d4946b;color:#34190d;border-color:#f7c2a3}
+.search{width:100%;margin-bottom:14px}
+.empty{
+  padding:34px 16px;text-align:center;color:var(--muted);border:1px dashed var(--line2);background:#0a0e1b
+}
+.pred-dash{
+  display:grid;grid-template-columns:1fr;gap:16px
+}
+.broadcast-card{
+  position:relative;background:linear-gradient(135deg,#141b32 0%,#0c1020 58%,#0a0d18 100%);
+  border:1px solid #2e3657;padding:18px 18px 16px;overflow:hidden;min-height:112px
+}
+.broadcast-card:before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(180deg,var(--red),transparent 72%)
+}
+.broadcast-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.broadcast-title{font-size:12px;color:#9ca6c9;font-weight:800;letter-spacing:.5px}
+.broadcast-main{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.broadcast-main .big{font-size:32px;font-weight:900;letter-spacing:-1px}
+.broadcast-main .small{font-size:12px;color:#98a0bf;max-width:150px;text-align:right}
+.broadcast-list{display:grid;gap:10px}
+.driver-rank-card{
+  display:grid;grid-template-columns:58px 1fr auto;align-items:center;gap:12px;
+  background:linear-gradient(90deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+  border:1px solid var(--line);padding:12px 14px;position:relative;overflow:hidden
+}
+.driver-rank-card:before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--red)
+}
+.driver-rank-card.top1:before{background:var(--yellow)}
+.driver-rank-card.top2:before{background:#d9dde8}
+.driver-rank-card.top3:before{background:#d4946b}
+.driver-rank-card .rank{
+  font-size:26px;font-weight:900;line-height:1;display:flex;align-items:center;gap:6px
+}
+.driver-rank-card .name{font-size:18px;font-weight:900;line-height:1.1}
+.driver-rank-card .team{margin-top:4px;font-size:12px;color:#9ca6c9;font-weight:700}
+.driver-rank-card .count{font-size:30px;font-weight:900;line-height:1;color:var(--cyan)}
+.driver-rank-card .count-label{font-size:11px;color:#9ca6c9;text-align:right;font-weight:800}
+.driver-rank-card .bar{
+  position:absolute;left:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--red),transparent);opacity:.92
+}
+.participant-feed-card{display:flex;flex-direction:column}
+.participant-list{display:grid;gap:10px;max-height:480px;overflow-y:auto;padding-right:6px;align-content:start}
+.participant-list::-webkit-scrollbar{width:10px}
+.participant-list::-webkit-scrollbar-track{background:#0b1020;border:1px solid var(--line)}
+.participant-list::-webkit-scrollbar-thumb{background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.08));border:1px solid rgba(255,255,255,.08)}
+.participant-item{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:12px 14px;background:#0a0e1a;border:1px solid var(--line)
+}
+.participant-item .name{font-weight:900}
+.participant-item .meta{font-size:12px;color:#95a0c5}
+.score-guide{margin-bottom:14px}
+.score-guide-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+.score-guide-item{padding:12px;border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:14px}
+.score-guide-item .k{font-size:12px;color:#95a0c5;margin-bottom:6px}
+.score-guide-item .v{font-size:22px;font-weight:900}
+.score-guide-item .d{font-size:12px;color:#b9c3e9;margin-top:4px;line-height:1.4}
+.driver-lineup{display:grid;gap:8px}
+.result-row{display:grid;grid-template-columns:44px minmax(0,1fr) 58px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.result-row:last-child{border-bottom:none}
+.result-pos{font-weight:900;font-size:18px;text-align:center}
+.driver-with-face{display:flex;align-items:center;gap:10px;min-width:0}
+.driver-face{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:900;color:#fff;background:linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.04));border:2px solid rgba(255,255,255,.12);overflow:hidden;flex:0 0 auto;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.driver-face.fallback{font-size:12px;letter-spacing:.02em}
+.driver-face img{width:100%;height:100%;object-fit:cover;display:block}
+.driver-name-wrap{min-width:0}
+.driver-name-main{font-weight:900;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.28;word-break:keep-all;overflow-wrap:anywhere}
+.driver-team-sub{font-size:12px;color:#95a0c5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.result-pts{justify-self:end;text-align:right}
+.result-pts .num{font-size:20px;font-weight:900;color:var(--cyan)}
+.result-pts .lbl{font-size:11px;color:#95a0c5;text-transform:uppercase;letter-spacing:.08em}
+.compact-round-grid{display:grid;grid-template-columns:1.2fr .9fr;gap:14px;align-items:start}
+.compact-result-card{padding:14px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.02)}
+.compact-result-card .card-title{margin-bottom:10px}
+.empty-inline{font-size:13px;color:#95a0c5}
+.round-score-strip{display:flex;gap:6px;flex-wrap:wrap}
+.score-chip{
+  display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:24px;padding:0 8px;
+  background:#12182d;border:1px solid var(--line);font-size:11px;font-weight:900;color:#dbe1f7
+}
+.history-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.story-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px}
+.story-stat{
+  background:linear-gradient(180deg, rgba(13,17,31,.95), rgba(9,12,22,.98));
+  border:1px solid var(--line);padding:16px;position:relative
+}
+.story-stat:before{
+  content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:linear-gradient(90deg,var(--red),transparent)
+}
+.story-stat .label{font-size:12px;color:var(--muted);font-weight:800;margin-bottom:8px}
+.story-stat .value{font-size:28px;font-weight:900}
+.story-stat .subv{font-size:13px;color:#afbad8;margin-top:8px;line-height:1.5}
+.long-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.result-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.result-box{background:#080b15;border:1px solid var(--line);padding:10px}
+.result-box .pos{font-size:11px;color:var(--muted);font-weight:800;margin-bottom:8px}
+.result-box select{width:100%;min-width:unset}
+.result-box .driver-preview{min-height:34px}
+.result-bottom{margin-top:12px}
+.note{font-size:12px;color:var(--muted);margin-top:8px}
+.footer-note{margin-top:12px;font-size:12px;color:var(--muted)}
+.password-modal{
+  position:fixed;inset:0;background:rgba(4,5,10,.78);display:none;align-items:center;justify-content:center;z-index:9999
+}
+.password-box{
+  width:min(440px, calc(100vw - 40px));background:linear-gradient(180deg, rgba(15,19,36,.98), rgba(9,12,22,.99));
+  border:1px solid var(--line2);box-shadow:var(--shadow);padding:22px;position:relative
+}
+.password-box:before{content:"";position:absolute;left:0;top:0;width:100%;height:4px;background:linear-gradient(90deg,var(--red),transparent)}
+.password-title{font-size:24px;font-weight:900;margin-bottom:8px}
+.password-sub{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+.password-err{min-height:18px;color:#ff8f88;font-size:12px;margin-top:10px}
+.lock-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;background:#16090a;border:1px solid rgba(255,80,80,.25);color:#ff9f9a;font-size:11px;font-weight:900;margin-bottom:12px}
+
+.podium-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.podium-card{
+  position:relative;background:linear-gradient(180deg, rgba(14,18,33,.98), rgba(9,12,22,.98));
+  border:1px solid var(--line2);padding:16px 14px 14px;min-height:160px;display:flex;flex-direction:column;justify-content:flex-end
+}
+.podium-card:before{content:"";position:absolute;left:0;top:0;width:100%;height:4px;background:linear-gradient(90deg,var(--red),transparent)}
+.podium-card.p1:before{background:linear-gradient(90deg,var(--yellow),transparent)}
+.podium-card.p2:before{background:linear-gradient(90deg,#d9dde8,transparent)}
+.podium-card.p3:before{background:linear-gradient(90deg,#d4946b,transparent)}
+.podium-card .place{font-size:12px;color:var(--muted);font-weight:800;margin-bottom:8px}
+.podium-card .podium-name{font-size:24px;font-weight:900;line-height:1.1}
+.podium-card .podium-score{font-size:34px;font-weight:900;line-height:1;color:var(--cyan);margin:12px 0 6px}
+.podium-card .podium-meta{font-size:12px;color:#aab5d4;line-height:1.5}
+.history-round-card{margin-bottom:14px;padding-bottom:18px;border-bottom:1px solid rgba(43,51,82,.72)}
+.history-round-card:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.history-round-details{border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.02);margin-bottom:12px;overflow:hidden}
+.history-round-details:last-child{margin-bottom:0}
+.history-round-summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;cursor:pointer}
+.history-round-summary::-webkit-details-marker{display:none}
+.history-round-summary .left{display:flex;flex-direction:column;gap:4px;min-width:0}
+.history-round-summary .round-name{font-size:15px;font-weight:800}
+.history-round-summary .round-meta{font-size:12px;color:var(--muted)}
+.history-round-summary .chev{font-size:18px;transition:transform .2s ease, opacity .2s ease;opacity:.8}
+.history-round-details[open] .history-round-summary .chev{transform:rotate(180deg);opacity:1}
+.history-round-body{padding:0 16px 16px 16px}
+
+.history-main-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:16px;align-items:start}
+.history-scroll-box{max-height:720px;overflow-y:auto;padding-right:6px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.history-side-box{max-height:720px;overflow-y:auto;padding-right:6px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.championship-column{display:grid;grid-template-columns:1fr;gap:16px;align-self:start}
+.championship-card .note{margin-bottom:10px}
+.championship-scroll{max-height:620px;overflow-y:auto;border:1px solid var(--line);background:#0a0e1a}
+.championship-scroll + .card-title{margin-top:18px}
+.championship-scroll::-webkit-scrollbar{width:10px}
+.championship-scroll::-webkit-scrollbar-track{background:#0b1020;border-left:1px solid var(--line)}
+.championship-scroll::-webkit-scrollbar-thumb{background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.08));border:1px solid rgba(255,255,255,.08)}
+.sprint-wrap{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}
+.sprint-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.sprint-points-row{display:flex;flex-wrap:wrap;gap:8px}
+.points-chip.sprint{border-color:rgba(255,217,0,.22);background:linear-gradient(90deg, rgba(255,217,0,.12), rgba(255,255,255,.03))}
+.points-chip .points-type{font-size:10px;font-weight:900;letter-spacing:.3px;color:#ffe98b;margin-right:4px}
+
+.history-side-box::-webkit-scrollbar{width:10px}
+.history-side-box::-webkit-scrollbar-track{background:#0b1020;border:1px solid var(--line)}
+.history-side-box::-webkit-scrollbar-thumb{background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.08));border:1px solid rgba(255,255,255,.08)}
+.player-round-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.history-scroll-box::-webkit-scrollbar{width:10px}
+.history-scroll-box::-webkit-scrollbar-track{background:#0b1020;border:1px solid var(--line)}
+.history-scroll-box::-webkit-scrollbar-thumb{background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.08));border:1px solid rgba(255,255,255,.08)}
+.official-points-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.points-chip{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;background:#0e1324;border:1px solid var(--line);font-size:12px;font-weight:900}
+.points-badge{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:22px;padding:0 6px;background:#151b2f;border:1px solid var(--line2);font-size:11px;font-weight:900;color:var(--cyan)}
+.reset-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+@media (max-width: 1100px){
+  .grid.two,.history-grid,.long-grid,.history-main-grid,.player-round-grid{grid-template-columns:1fr}
+  .grid.four{grid-template-columns:repeat(2,1fr)}
+  .story-grid{grid-template-columns:1fr}
+  .result-grid,.sprint-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width: 620px){
+  .app{padding:16px 12px 28px}
+  .hero{gap:14px;margin-bottom:18px}
+  .logo-box{padding:10px 12px}
+  .logo-box span{font-size:11px}
+  .title h1{font-size:30px;line-height:1.02}
+  .title p{font-size:12px}
+  .live-pill{width:100%;justify-content:center;padding:10px 12px;font-size:12px}
+  .tabs{gap:8px;margin-bottom:14px}
+  .tab{padding:11px 13px;font-size:13px}
+  .tab .icon{margin-right:6px}
+  .top-line{margin-bottom:18px}
+  .card{padding:14px 14px;margin-bottom:12px}
+  .card-title{font-size:15px}
+  .metric{padding:14px}
+  .metric .num{font-size:28px}
+  .note,.sub,.desc,.table td,.table th{font-size:12px}
+  .driver-face{width:36px;height:36px}
+  .driver-name-main{font-size:13px}
+  .driver-team-sub{font-size:11px}
+  .result-row{grid-template-columns:32px minmax(0,1fr) 48px;gap:8px;padding:10px 0}
+  .result-pos{font-size:16px}
+  .result-pts .num{font-size:16px}
+  .result-pts .lbl{font-size:10px}
+  .history-round-summary{padding:12px 12px}
+  .history-round-summary .round-name{font-size:14px}
+  .history-round-summary .round-meta{font-size:11px}
+  .history-round-body{padding:0 12px 12px 12px}
+  .history-scroll-box,.history-side-box{max-height:58vh;padding-right:0}
+  .championship-scroll{max-height:50vh}
+  .sprint-grid{grid-template-columns:1fr}
+  .official-points-row,.sprint-points-row{gap:6px}
+  .points-chip{width:100%;justify-content:space-between;align-items:flex-start;padding:8px 10px}
+  .points-chip .driver-with-face{flex:1;min-width:0}
+  .points-badge{min-width:34px}
+  .btn,.btn-red,.btn-ghost,button{min-height:42px}
+}
+@media (max-width: 820px){
+  .title h1{font-size:40px}
+  .hero{flex-direction:column}
+  .grid.four,.driver-grid,.grid.three,.result-grid,.podium-grid,.player-round-grid{grid-template-columns:1fr}
+  .history-scroll-box,.history-side-box{max-height:62vh;padding-right:2px}
+  .championship-column{gap:12px}
+  .score-guide-grid{grid-template-columns:1fr}
+  .compact-round-grid{grid-template-columns:1fr}
+  .cheer-layout{grid-template-columns:1fr}
+  .cheer-target-grid{grid-template-columns:1fr}
+  .cheer-highlight{grid-template-columns:1fr}
+  .cheer-feed-card{max-height:none}
+  .cheer-feed{max-height:58vh;padding-right:2px}
+}
+.cheer-layout{display:grid;grid-template-columns:1fr;gap:14px}
+.cheer-composer .row{align-items:flex-start}
+.cheer-target-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cheer-feed-card{display:flex;flex-direction:column}
+.cheer-feed{display:flex;flex-direction:column;gap:10px;overflow:auto;max-height:56vh;padding-right:4px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.cheer-item{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.02)}
+.cheer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.cheer-name{font-size:14px;font-weight:900;line-height:1.35;word-break:break-word;overflow-wrap:anywhere}
+.cheer-meta{font-size:11px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-width:0;word-break:break-word}
+.cheer-msg{font-size:14px;line-height:1.6;word-break:break-word;overflow-wrap:anywhere;white-space:pre-wrap}
+.cheer-target-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-size:11px;color:var(--muted);margin-top:8px}
+.cheer-highlight{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.cheer-stat{border:1px solid var(--line);border-radius:18px;padding:14px;background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015))}
+.cheer-stat .k{font-size:11px;color:var(--muted);margin-bottom:8px}
+.cheer-stat .v{font-size:22px;font-weight:900}
+.cheer-stat .d{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.4}
+.cheer-quick{display:flex;flex-wrap:wrap;gap:8px}
+.cheer-quick button{padding:8px 10px;border-radius:999px}
+.cheer-empty{padding:22px 12px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:14px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hero">
+    <div>
+      <div class="brand">
+        <div class="logo-box"><span>FORMULA 1</span></div>
+        <div class="title">
+          <h1>예측 리그</h1>
+          <p>F1 레이스 결과 예측 & 랭킹 시스템</p>
+        </div>
+      </div>
+      <div class="sync-status" id="sync-status">공유 링크 모드 준비 중...</div>
+    </div>
+    <div class="live-pill"><span class="live-dot"></span><strong>LIVE PREDICTION CENTER</strong></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('ranking', this)"><span class="icon">🏆</span>랭킹</button>
+    <button class="tab" onclick="switchTab('predict', this)"><span class="icon">✏️</span>예측 입력</button>
+    <button class="tab" onclick="switchTab('predictdash', this)"><span class="icon">📡</span>예측 대시보드</button>
+    <button class="tab" onclick="switchTab('cheer', this)"><span class="icon">📣</span>응원</button>
+    <button class="tab" onclick="switchTab('history', this)"><span class="icon">🧾</span>경기 기록</button>
+    <button class="tab" onclick="requestProtectedTab('result', this)"><span class="icon">🔒</span>결과 입력</button>
+    <button class="tab" onclick="requestProtectedTab('admin', this)"><span class="icon">🔒</span>관리</button>
+  </div>
+  <div class="top-line"></div>
+
+  <section id="ranking" class="section active">
+    <div class="grid four">
+      <div class="metric"><div class="lbl">참가자</div><div class="num" id="stat-players">0</div><div class="desc">명 등록됨</div></div>
+      <div class="metric"><div class="lbl">완료된 레이스</div><div class="num" id="stat-rounds">0</div><div class="desc">경기</div></div>
+      <div class="metric"><div class="lbl">최고 점수</div><div class="num" id="stat-best">0</div><div class="desc" id="stat-best-name">-</div></div>
+      <div class="metric"><div class="lbl">완벽 예측</div><div class="num" id="stat-perfect">0</div><div class="desc">TOP5 전부 적중</div></div>
+    </div>
+
+    <div class="section-title">종합 랭킹</div>
+    <div class="card green score-guide" id="ranking-score-guide"></div>
+    <div class="card gold">
+      <input class="search" type="text" id="ranking-search" placeholder="참가자 이름 검색..." oninput="renderRanking(this.value)">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:60px">순위</th>
+              <th>참가자</th>
+              <th style="width:90px;text-align:center">총점</th>
+              <th style="width:90px;text-align:center">우승</th>
+              <th style="width:90px;text-align:center">포디움</th>
+              <th style="width:90px;text-align:center">정확</th>
+              <th style="width:90px;text-align:center">부분</th>
+              <th style="width:90px;text-align:center">참가</th>
+              <th style="width:220px">라운드 점수</th>
+            </tr>
+          </thead>
+          <tbody id="ranking-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="predict" class="section">
+    <div class="section-title">예측 입력</div>
+    <p class="sub">드라이버를 1위부터 5위까지 선택하고 저장하세요.</p>
+    <div class="grid two">
+      <div>
+        <div class="card">
+          <div class="row">
+            <label>참가자 이름</label>
+            <input type="text" id="pred-name" placeholder="이름 입력" style="max-width:220px">
+            <label style="min-width:60px">라운드</label>
+            <select id="pred-round" style="max-width:220px"></select>
+          </div>
+          <div class="driver-grid">
+            <div class="driver-slot"><div class="pos">1위 예측</div><select id="p1"></select><div class="driver-preview" id="pv1"></div></div>
+            <div class="driver-slot"><div class="pos">2위 예측</div><select id="p2"></select><div class="driver-preview" id="pv2"></div></div>
+            <div class="driver-slot"><div class="pos">3위 예측</div><select id="p3"></select><div class="driver-preview" id="pv3"></div></div>
+            <div class="driver-slot"><div class="pos">4위 예측</div><select id="p4"></select><div class="driver-preview" id="pv4"></div></div>
+            <div class="driver-slot"><div class="pos">5위 예측</div><select id="p5"></select><div class="driver-preview" id="pv5"></div></div>
+          </div>
+          <div class="row" style="justify-content:space-between;margin-top:10px">
+            <div class="stack" id="team-legend"></div>
+            <div class="reset-actions">
+              <button type="button" onclick="resetPredictionForm()">리셋</button>
+              <button class="btn-red" onclick="savePrediction()">예측 저장</button>
+            </div>
+          </div>
+          <div class="note">중복 드라이버 선택은 자동으로 막습니다.</div>
+        </div>
+      </div>
+      <div>
+        <div class="card soft">
+          <div class="card-title">현재 라운드 요약</div>
+          <div class="stack" style="margin-bottom:10px">
+            <span class="mini-pill">현재 라운드: <strong id="predict-round-label" style="margin-left:6px">-</strong></span>
+            <span class="mini-pill">참가자 <strong id="quick-pred-count" style="margin-left:6px">0</strong>명</span>
+          </div>
+          <div id="pred-list"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="predictdash" class="section">
+    <div class="section-title">실시간 예측 대시보드</div>
+    <p class="sub">가장 최근에 추가된 라운드 기준으로 누가 참가했고, 어떤 드라이버가 얼마나 많이 선택됐는지 실시간으로 보여줍니다.</p>
+    <div class="grid three">
+      <div class="broadcast-card">
+        <div class="broadcast-head"><div class="broadcast-title">LATEST ROUND</div><div class="mini-pill" id="dash-round">-</div></div>
+        <div class="broadcast-main"><div class="big" id="dash-submit-count">0</div><div class="small">최신 라운드 예측 제출 수</div></div>
+      </div>
+      <div class="broadcast-card">
+        <div class="broadcast-head"><div class="broadcast-title">MOST PICKED WINNER</div><div class="mini-pill">P1</div></div>
+        <div class="broadcast-main"><div class="big" id="dash-top-p1">-</div><div class="small" id="dash-top-p1-count">선택 0회</div></div>
+      </div>
+      <div class="broadcast-card">
+        <div class="broadcast-head"><div class="broadcast-title">LIVE PARTICIPANTS</div><div class="mini-pill">ACTIVE</div></div>
+        <div class="broadcast-main"><div class="big" id="dash-participants">0</div><div class="small">최신 라운드 참가 인원</div></div>
+      </div>
+    </div>
+
+    <div class="grid two">
+      <div class="card gold">
+        <div class="card-title">드라이버 인기 랭킹</div>
+        <div class="broadcast-list" id="driver-ranking-cards"></div>
+      </div>
+      <div class="pred-dash">
+        <div class="card soft participant-feed-card">
+          <div class="card-title">참가자 LIVE 피드</div>
+          <div class="participant-list" id="participant-live-list"></div>
+        </div>
+        <div class="card green">
+          <div class="card-title">포지션별 선호 드라이버</div>
+          <div id="position-breakdown"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <section id="cheer" class="section">
+    <div class="section-title">응원 / 팬존</div>
+    <p class="sub">이번 라운드에 한마디를 남겨보세요. 모바일에서 보기 편하게 피드 안에서만 스크롤되도록 만들었습니다.</p>
+
+    <div class="cheer-highlight" id="cheer-highlight"></div>
+
+    <div class="cheer-layout">
+      <div class="card soft cheer-feed-card">
+        <div class="card-title">실시간 응원 피드</div>
+        <div class="note" id="cheer-feed-note">최신 응원이 위로 올라오고, 이 카드 안에서만 길게 스크롤해서 볼 수 있어요.</div>
+        <div class="cheer-feed" id="cheer-feed"></div>
+      </div>
+
+      <div class="card cheer-composer">
+        <div class="card-title">응원 남기기</div>
+        <div class="row">
+          <label>참가자 이름</label>
+          <input type="text" id="cheer-name" placeholder="이름 입력" style="max-width:220px">
+          <label style="min-width:60px">라운드</label>
+          <select id="cheer-round" style="max-width:220px"></select>
+        </div>
+        <div class="cheer-target-grid" style="margin-top:10px;grid-template-columns:1fr">
+          <div>
+            <label>응원 드라이버</label>
+            <select id="cheer-target-value"></select>
+          </div>
+        </div>
+        <div style="margin-top:12px">
+          <label>응원 메시지</label>
+          <textarea id="cheer-message" maxlength="80" placeholder="예: 이번엔 노리스 제발 우승 가자 🏁" style="min-height:110px"></textarea>
+          <div class="note"><span id="cheer-count">0</span>/80자 · 짧고 가볍게 응원 메시지를 남길 수 있어요.</div>
+        </div>
+        <div style="margin-top:12px">
+          <div class="card-title" style="margin-bottom:8px">빠른 이모지</div>
+          <div class="cheer-quick">
+            <button type="button" onclick="appendCheerEmoji('🏁')">🏁 파이팅</button>
+            <button type="button" onclick="appendCheerEmoji('🔥')">🔥 폼 좋다</button>
+            <button type="button" onclick="appendCheerEmoji('👏')">👏 응원해</button>
+            <button type="button" onclick="appendCheerEmoji('💥')">💥 이번엔 간다</button>
+            <button type="button" onclick="appendCheerEmoji('😭')">😭 제발 완주</button>
+          </div>
+        </div>
+        <div class="row" style="justify-content:flex-end;margin-top:14px">
+          <button type="button" onclick="resetCheerForm()">리셋</button>
+          <button class="btn-red" type="button" onclick="saveCheer()">응원 보내기</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section id="result" class="section">
+    <div class="lock-badge">🔒 관리자 전용 페이지</div>
+    <div class="section-title">실제 결과 입력</div>
+    <p class="sub">1위부터 20위까지 입력하고, 리타이어도 체크할 수 있습니다.</p>
+    <div class="card">
+      <div class="row">
+        <label>라운드</label>
+        <select id="res-round" style="max-width:220px"></select>
+      </div>
+      <div class="result-grid" id="result-grid"></div>
+      <div class="sprint-wrap">
+        <div class="card-title">스프린트 결과 입력</div>
+        <div class="note">스프린트 예측은 받지 않고, 관리자 결과 입력만 챔피언십 포인트에 반영됩니다. 스프린트가 없는 라운드는 비워두면 됩니다.</div>
+        <div class="sprint-grid" id="sprint-grid"></div>
+      </div>
+      <div class="result-bottom">
+        <div class="card-title">리타이어 / 미분류</div>
+        <select id="retired-drivers" multiple size="10" style="width:100%;min-height:180px"></select>
+        <div class="note">Ctrl 또는 Cmd를 누른 채 여러 명을 선택할 수 있습니다.</div>
+      </div>
+      <div class="row" style="justify-content:flex-end;margin-top:12px">
+        <button class="btn-red" onclick="saveResult()">결과 저장 및 점수 계산</button>
+      </div>
+    </div>
+    <div class="card" id="result-summary" style="display:none">
+      <div class="card-title">이번 라운드 결과 요약</div>
+      <div id="result-detail"></div>
+    </div>
+  </section>
+
+  <section id="history" class="section">
+    <div class="section-title">경기 기록</div>
+
+    <div class="story-grid">
+      <div class="story-stat">
+        <div class="label">시즌 최다 우승</div>
+        <div class="value" id="story-wins">-</div>
+        <div class="subv" id="story-wins-sub">아직 결과가 없습니다.</div>
+      </div>
+      <div class="story-stat">
+        <div class="label">가장 꾸준한 선수</div>
+        <div class="value" id="story-consistent">-</div>
+        <div class="subv" id="story-consistent-sub">평균 순위 기준</div>
+      </div>
+      <div class="story-stat">
+        <div class="label">리타이어 최다</div>
+        <div class="value" id="story-retire">-</div>
+        <div class="subv" id="story-retire-sub">DNF 데이터 기준</div>
+      </div>
+      <div class="story-stat">
+        <div class="label">스프린트 최강자</div>
+        <div class="value" id="story-sprint">-</div>
+        <div class="subv" id="story-sprint-sub">스프린트 우승 기준</div>
+      </div>
+    </div>
+
+    <div class="history-main-grid">
+      <div class="card">
+        <div class="card-title">완료된 라운드 결과</div>
+        <div class="note">라운드가 많아져도 길게 늘어지지 않도록, 경기별로 눌러서 펼쳐보는 방식으로 구성했습니다.</div>
+        <div id="history-results" class="history-scroll-box"></div>
+      </div>
+      <div class="championship-column">
+        <div class="card gold championship-card">
+          <div class="card-title">드라이버 챔피언십</div>
+          <div class="note">완료된 라운드 결과 옆에서 현재 드라이버 순위를 바로 볼 수 있습니다.</div>
+          <div id="driver-stats-table" class="history-side-box"></div>
+        </div>
+        <div class="card gold championship-card">
+          <div class="card-title">컨스트럭터 챔피언십</div>
+          <div class="note">팀별 누적 포인트도 따로 분리해서 한눈에 볼 수 있게 정리했습니다.</div>
+          <div id="constructor-stats-table" class="history-side-box"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="player-round-grid">
+      <div class="card soft">
+        <div class="card-title">참가자 라운드 결과 안내</div>
+        <div class="note">참가자별 점수, 포디움, 라운드 결과는 랭킹 페이지에서 확인할 수 있게 옮겼습니다.</div>
+        <div class="empty">랭킹 탭에서 참가자 챔피언십을 확인해 주세요.</div>
+      </div>
+      <div class="card green">
+        <div class="card-title">시즌 스토리 데이터</div>
+        <div id="season-story"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="admin" class="section">
+    <div class="lock-badge">🔒 관리자 전용 페이지</div>
+    <div class="section-title">관리자 설정</div>
+    <div class="card">
+      <div class="card-title">참가자 등록</div>
+      <div class="row">
+        <input type="text" id="new-player" placeholder="참가자 이름" style="max-width:220px">
+        <button onclick="addPlayer()">추가</button>
+      </div>
+      <div class="stack" id="player-list"></div>
+    </div>
+    <div class="card soft">
+      <div class="card-title">라운드 관리</div>
+      <div class="row">
+        <input type="text" id="new-round" placeholder="예: Bahrain GP" style="max-width:220px">
+        <button onclick="addRound()">추가</button>
+      </div>
+      <div id="round-list"></div>
+    </div>
+    <div class="card green">
+      <div class="card-title">점수 설정</div>
+      <p class="sub">1위 정확 적중은 별도 보너스를 적용합니다.</p>
+      <div class="row">
+        <div><label>정확 일치</label><input type="number" id="score-exact" value="3" style="width:88px"></div>
+        <div><label>포디움 내 있음</label><input type="number" id="score-partial" value="1" style="width:88px"></div>
+        <div><label>1위 정확</label><input type="number" id="score-first" value="5" style="width:88px"></div>
+      </div>
+      <div class="row" style="justify-content:flex-end"><button class="btn-red" onclick="saveScoreSettings()">저장</button></div>
+    </div>
+    <div class="card">
+      <div class="card-title">공유 동기화 설정</div>
+      <div class="note">공유 링크를 진짜 한 링크로 같이 쓰려면 Firebase Realtime Database 설정이 필요합니다.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">데이터 초기화</div>
+      <button class="btn-outline-red" onclick="resetAll()">모든 데이터 초기화</button>
+    </div>
+  </section>
+
+  <div class="footer-note">공유 링크용 버전입니다. 결과 입력과 관리자 탭은 비밀번호가 필요합니다.</div>
+</div>
+
+<div class="password-modal" id="password-modal">
+  <div class="password-box">
+    <div class="lock-badge">🔒 ADMIN ONLY ACCESS</div>
+    <div class="password-title">관리자만 입장 가능합니다</div>
+    <div class="password-sub" id="password-sub">이 메뉴는 관리자 전용입니다. 비밀번호를 입력해야 들어갈 수 있습니다.</div>
+    <input type="password" id="password-input" placeholder="비밀번호 입력">
+    <div class="password-err" id="password-err"></div>
+    <div class="row" style="justify-content:flex-end;margin-top:10px">
+      <button onclick="closePasswordModal()">취소</button>
+      <button class="btn-red" onclick="submitPassword()">입장</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+
+const ADMIN_PASSWORD = "sepang";
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBUTGITXDz0Rsmgpf7dEr36nU4zeodluzM",
+  authDomain: "f1-edc48.firebaseapp.com",
+  databaseURL: "https://f1-edc48-default-rtdb.firebaseio.com",
+  projectId: "f1-edc48",
+  storageBucket: "f1-edc48.firebasestorage.app",
+  messagingSenderId: "431529139712",
+  appId: "1:431529139712:web:7f3a575cac26bf6c0482e5"
+};
+
+const F1_DRIVERS = [
+  {name:"Verstappen", team:"Red Bull", color:"#1E5BC6"},
+  {name:"Hadjar", team:"Red Bull", color:"#1E5BC6"},
+  {name:"Lawson", team:"Racing Bulls", color:"#6692FF"},
+  {name:"Lindblad", team:"Racing Bulls", color:"#6692FF"},
+  {name:"Leclerc", team:"Ferrari", color:"#DC0000"},
+  {name:"Hamilton", team:"Ferrari", color:"#DC0000"},
+  {name:"Norris", team:"McLaren", color:"#FF8700"},
+  {name:"Piastri", team:"McLaren", color:"#FF8700"},
+  {name:"Russell", team:"Mercedes", color:"#00D2BE"},
+  {name:"Antonelli", team:"Mercedes", color:"#00D2BE"},
+  {name:"Alonso", team:"Aston Martin", color:"#229971"},
+  {name:"Stroll", team:"Aston Martin", color:"#229971"},
+  {name:"Gasly", team:"Alpine", color:"#FF5F98"},
+  {name:"Colapinto", team:"Alpine", color:"#FF5F98"},
+  {name:"Albon", team:"Williams", color:"#1868DB"},
+  {name:"Sainz", team:"Williams", color:"#1868DB"},
+  {name:"Ocon", team:"Haas", color:"#B6BABD"},
+  {name:"Bearman", team:"Haas", color:"#B6BABD"},
+  {name:"Bortoleto", team:"Audi", color:"#00A19C"},
+  {name:"Hulkenberg", team:"Audi", color:"#00A19C"},
+  {name:"Perez", team:"Cadillac", color:"#8E1538"},
+  {name:"Bottas", team:"Cadillac", color:"#8E1538"}
+];
+
+const DRIVER_MAP = Object.fromEntries(F1_DRIVERS.map(d=>[d.name,d]));
+const TEAM_MAP = {};
+F1_DRIVERS.forEach(d => TEAM_MAP[d.team] = d.color);
+
+const DRIVER_PORTRAITS = {};
+
+const OFFICIAL_F1_POINTS = [25,18,15,12,10,8,6,4,2,1];
+const OFFICIAL_SPRINT_POINTS = [8,7,6,5,4,3,2,1];
+
+function normalizeParticipantName(name){
+  return String(name || '').trim().replace(/\s+/g, ' ').toLowerCase();
+}
+function findPlayerByNormalized(name){
+  const normalized = normalizeParticipantName(name);
+  return state.players.find(player => normalizeParticipantName(player) === normalized) || '';
+}
+
+let firebaseReady = false;
+let db = null;
+let protectedTarget = null;
+let protectedButton = null;
+
+let state = {
+  players:["pang"],
+  rounds:["Bahrain GP","Saudi Arabia GP","Australian GP"],
+  predictions:{},
+  results:{},
+  scoreBoard:{},
+  statsByPlayer:{},
+  cheers:{},
+  scores:{exact:3, partial:1, first:5}
+};
+
+function defaultResultState(){
+  return {
+    order: Array(20).fill(""),
+    retired: [],
+    sprintOrder: Array(8).fill("")
+  };
+}
+
+function getDriverInitials(name){
+  return String(name || '').split(/\s+/).filter(Boolean).slice(0,2).map(v=>v[0]).join('').toUpperCase() || '?';
+}
+function driverFace(name){
+  const driver = DRIVER_MAP[name] || {};
+  const color = driver.color || '#6b7280';
+  const url = DRIVER_PORTRAITS[name];
+  if(url){
+    return `<span class="driver-face" style="border-color:${color}"><img src="${escapeAttr(url)}" alt="${escapeAttr(name)}"></span>`;
+  }
+  return `<span class="driver-face fallback" style="background:linear-gradient(135deg, ${color}, rgba(255,255,255,.08));border-color:${color}">${escapeHtml(getDriverInitials(name))}</span>`;
+}
+function driverIdentity(name){
+  const driver = DRIVER_MAP[name] || {};
+  return `<div class="driver-with-face">${driverFace(name)}<div class="driver-name-wrap"><div class="driver-name-main">${escapeHtml(name)}</div><div class="driver-team-sub">${escapeHtml(driver.team || '-')}</div></div></div>`;
+}
+function renderCompactClassification(order, pointsMap, label){
+  const rows = order.map((driver, idx)=>{
+    if(!driver) return '';
+    const pts = pointsMap[idx] || 0;
+    return `<div class="result-row"><div class="result-pos">${idx+1}</div><div>${driverIdentity(driver)}</div><div class="result-pts"><div class="num">${pts}</div><div class="lbl">${label}</div></div></div>`;
+  }).filter(Boolean).join('');
+  return rows || '<div class="empty-inline">입력된 결과가 없습니다.</div>';
+}
+
+function initializeSync(){
+  try{
+    const app = initializeApp(FIREBASE_CONFIG);
+    db = getDatabase(app);
+    firebaseReady = true;
+    document.getElementById('sync-status').textContent = '공유 링크 활성화됨. 같은 Firebase 데이터를 사용합니다.';
+    onValue(ref(db, 'f1PredictionLeague'), (snapshot)=>{
+      const incoming = snapshot.val();
+      if(incoming){
+        state = normalizeState(incoming);
+        renderAll();
+      } else {
+        pushState();
+        renderAll();
+      }
+    }, (error)=>{
+      firebaseReady = false;
+      document.getElementById('sync-status').textContent = 'Firebase 연결 실패. 이 파일은 설정값을 넣어야 진짜 공유 링크로 동작합니다.';
+      loadLocalFallback();
+      renderAll();
+    });
+  } catch (e){
+    firebaseReady = false;
+    document.getElementById('sync-status').textContent = 'Firebase 설정 전입니다. 현재는 이 브라우저 내부 저장으로만 동작합니다.';
+    loadLocalFallback();
+    renderAll();
+  }
+}
+
+function loadLocalFallback(){
+  try{
+    const raw = localStorage.getItem('f1pred_shared_locked');
+    if(raw) state = normalizeState(JSON.parse(raw));
+  }catch(e){}
+}
+function saveLocalFallback(){
+  try{ localStorage.setItem('f1pred_shared_locked', JSON.stringify(state)); }catch(e){}
+}
+function pushState(){
+  state = normalizeState(state);
+  // Firebase 동기화와 별개로 현재 화면은 즉시 갱신해서
+  // 경기 결과 저장 직후 시즌 스토리/챔피언십이 바로 반영되게 합니다.
+  renderAll();
+  if(firebaseReady && db){
+    set(ref(db, 'f1PredictionLeague'), state).catch(()=>{
+      saveLocalFallback();
+    });
+  } else {
+    saveLocalFallback();
+  }
+}
+function normalizeState(obj){
+  const s = Object.assign({
+    players:["pang"],
+    rounds:["Bahrain GP","Saudi Arabia GP","Australian GP"],
+    predictions:{},
+    results:{},
+    scoreBoard:{},
+    statsByPlayer:{},
+    cheers:{},
+    scores:{exact:3, partial:1, first:5}
+  }, obj || {});
+  Object.keys(s.results || {}).forEach(round=>{
+    const r = s.results[round];
+    if(Array.isArray(r)){
+      s.results[round] = { order: r.concat(Array(20).fill("")).slice(0,20), retired: [] };
+    } else {
+      s.results[round] = {
+        order: (r?.order || []).concat(Array(20).fill("")).slice(0,20),
+        retired: Array.isArray(r?.retired) ? r.retired : [],
+        sprintOrder: (r?.sprintOrder || []).concat(Array(8).fill("")).slice(0,8),
+        updatedAt: r?.updatedAt || r?.createdAt || 0,
+        createdAt: r?.createdAt || r?.updatedAt || 0
+      };
+    }
+  });
+  const normalizedCheers = {};
+  Object.entries(s.cheers || {}).forEach(([round, items])=>{
+    normalizedCheers[round] = Array.isArray(items) ? items.map(item=>({
+      name: String(item?.name || '').trim(),
+      message: String(item?.message || '').trim().slice(0,80),
+      targetType: item?.targetType || 'general',
+      targetValue: String(item?.targetValue || '전체 경기'),
+      createdAt: Number(item?.createdAt || 0)
+    })).filter(item=>item.name && item.message) : [];
+  });
+  s.cheers = normalizedCheers;
+  return s;
+}
+
+window.switchTab = function switchTab(id, btn){
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.querySelectorAll('.section').forEach(el=>el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='predict'){renderPredList();}
+  if(id==='predictdash'){renderPredictDashboard();}
+  if(id==='cheer'){renderCheerboard();}
+  if(id==='ranking'){renderRanking(document.getElementById('ranking-search')?.value || '');}
+  if(id==='history'){renderHistory();}
+  if(id==='result'){syncPreviewFromResult();}
+}
+window.requestProtectedTab = function requestProtectedTab(id, btn){
+  protectedTarget = id;
+  protectedButton = btn;
+  document.getElementById('password-sub').textContent = id === 'result'
+    ? '결과 입력 페이지는 관리자 전용입니다. 비밀번호를 입력해야 들어갈 수 있습니다.'
+    : '관리자 페이지는 관리자 전용입니다. 비밀번호를 입력해야 들어갈 수 있습니다.';
+  document.getElementById('password-input').value = '';
+  document.getElementById('password-err').textContent = '';
+  document.getElementById('password-modal').style.display = 'flex';
+  setTimeout(()=>document.getElementById('password-input').focus(), 50);
+}
+function closePasswordModal(){
+  document.getElementById('password-modal').style.display = 'none';
+}
+window.closePasswordModal = closePasswordModal;
+
+function submitPassword(){
+  const v = document.getElementById('password-input').value;
+  if(v !== ADMIN_PASSWORD){
+    document.getElementById('password-err').textContent = '비밀번호가 올바르지 않습니다.';
+    return;
+  }
+  closePasswordModal();
+  switchTab(protectedTarget, protectedButton);
+}
+window.submitPassword = submitPassword;
+
+function renderAll(){
+  populateDriverSelects();
+  populateRoundSelects();
+  buildResultInputs();
+  renderTeamLegend();
+  populateCheerTargets();
+  renderPlayers();
+  renderRounds();
+  renderPredList();
+  renderPredictDashboard();
+  renderCheerboard();
+  renderRanking(document.getElementById('ranking-search')?.value || '');
+  renderHistory();
+  syncPreviewFromResult();
+  updateHeaderStats();
+  bindEventsOnce();
+}
+
+let bound = false;
+function bindEventsOnce(){
+  if(bound) return;
+  bound = true;
+  document.getElementById('pred-round').addEventListener('change', ()=>{
+    renderPredList();
+    renderPredictDashboard();
+  });
+  document.getElementById('cheer-round').addEventListener('change', renderCheerboard);
+  document.getElementById('cheer-message').addEventListener('input', ()=>{
+    document.getElementById('cheer-count').textContent = document.getElementById('cheer-message').value.length;
+  });
+  document.getElementById('res-round').addEventListener('change', syncPreviewFromResult);
+  document.getElementById('password-input').addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter') submitPassword();
+  });
+}
+
+function populateDriverSelects(){
+  const optionHtml = ['<option value="">선택</option>'].concat(F1_DRIVERS.map(d=>`<option value="${d.name}">${d.name} · ${d.team}</option>`)).join('');
+  ['p1','p2','p3','p4','p5'].forEach(id=>{
+    const el = document.getElementById(id);
+    const cur = el.value;
+    el.innerHTML = optionHtml;
+    if(cur) el.value = cur;
+    updateDriverPreview(id, 'pv'+id.slice(1));
+    if(!el.dataset.bound){
+      el.addEventListener('change', ()=>handlePredictionSelectChange(Number(id.slice(1))));
+      el.dataset.bound = '1';
+    }
+  });
+  const retired = document.getElementById('retired-drivers');
+  if(retired){
+    retired.innerHTML = F1_DRIVERS.map(d=>`<option value="${d.name}">${d.name} · ${d.team}</option>`).join('');
+  }
+}
+function buildResultInputs(){
+  const grid = document.getElementById('result-grid');
+  grid.innerHTML = '';
+  for(let i=1;i<=20;i++){
+    const box = document.createElement('div');
+    box.className = 'result-box';
+    box.innerHTML = `<div class="pos">${i}위</div><select id="r${i}"></select><div class="driver-preview" id="rv${i}"></div>`;
+    grid.appendChild(box);
+  }
+  const sprintGrid = document.getElementById('sprint-grid');
+  if(sprintGrid){
+    sprintGrid.innerHTML = '';
+    for(let i=1;i<=8;i++){
+      const box = document.createElement('div');
+      box.className = 'result-box';
+      box.innerHTML = `<div class="pos">스프린트 ${i}위</div><select id="sr${i}"></select><div class="driver-preview" id="srv${i}"></div>`;
+      sprintGrid.appendChild(box);
+    }
+  }
+  const optionHtml = ['<option value="">선택</option>'].concat(F1_DRIVERS.map(d=>`<option value="${d.name}">${d.name} · ${d.team}</option>`)).join('');
+  for(let i=1;i<=20;i++){
+    const el = document.getElementById('r'+i);
+    el.innerHTML = optionHtml;
+    if(!el.dataset.bound){
+      el.addEventListener('change', ()=>updateDriverPreview('r'+i, 'rv'+i));
+      el.dataset.bound = '1';
+    }
+  }
+  for(let i=1;i<=8;i++){
+    const el = document.getElementById('sr'+i);
+    if(!el) continue;
+    el.innerHTML = optionHtml;
+    if(!el.dataset.bound){
+      el.addEventListener('change', ()=>updateDriverPreview('sr'+i, 'srv'+i));
+      el.dataset.bound = '1';
+    }
+  }
+}
+function getLatestRound(){
+  return state.rounds && state.rounds.length ? state.rounds[state.rounds.length - 1] : '';
+}
+
+function populateRoundSelects(){
+  ['pred-round','res-round','cheer-round'].forEach(id=>{
+    const el=document.getElementById(id);
+    const latestRound = getLatestRound();
+    const roundsForSelect = id === 'cheer-round' ? [...state.rounds].reverse() : [...state.rounds];
+    const cur = id === 'cheer-round' ? (el.dataset.userSelected === 'true' ? el.value : latestRound || roundsForSelect[0] || '') : (el.value || roundsForSelect[0] || '');
+    el.innerHTML = roundsForSelect.length ? roundsForSelect.map(r=>`<option value="${r}">${r}</option>`).join('') : '<option value="">라운드 없음</option>';
+    if(cur && roundsForSelect.includes(cur)) el.value = cur;
+    else if(roundsForSelect[0]) el.value = roundsForSelect[0];
+  });
+  document.getElementById('predict-round-label').textContent = document.getElementById('pred-round').value || '-';
+  const cheerRoundEl = document.getElementById('cheer-round');
+  if(cheerRoundEl && getLatestRound() && state.rounds.includes(getLatestRound()) && cheerRoundEl.dataset.userSelected !== 'true') cheerRoundEl.value = getLatestRound();
+}
+
+function renderTeamLegend(){
+  const el = document.getElementById('team-legend');
+  const teams = Object.entries(TEAM_MAP);
+  el.innerHTML = teams.map(([team,color])=>`<span class="team-chip"><span class="dot" style="background:${color}"></span>${team}</span>`).join('');
+}
+function driverChip(name){
+  if(!name || !DRIVER_MAP[name]) return '<span class="driver-chip"><span class="dot" style="background:#666"></span>선택 안 됨</span>';
+  const d = DRIVER_MAP[name];
+  return `<span class="driver-chip" style="background:linear-gradient(90deg, ${hexToRgba(d.color,.22)}, rgba(255,255,255,.03));border-color:${hexToRgba(d.color,.45)}"><span class="dot" style="background:${d.color}"></span>${d.name}</span>`;
+}
+function updateDriverPreview(selectId, previewId){
+  const value = document.getElementById(selectId).value;
+  const el = document.getElementById(previewId);
+  if(el) el.innerHTML = value ? driverChip(value) : '';
+}
+function handlePredictionSelectChange(changedIndex){
+  updateDriverPreview('p'+changedIndex, 'pv'+changedIndex);
+  const picks = [1,2,3,4,5].map(i=>document.getElementById('p'+i).value).filter(Boolean);
+  const dup = picks.find((name,idx)=> picks.indexOf(name)!==idx);
+  if(dup){
+    alert('같은 드라이버를 중복 선택할 수 없습니다.');
+    document.getElementById('p'+changedIndex).value = '';
+    updateDriverPreview('p'+changedIndex, 'pv'+changedIndex);
+  }
+}
+function syncPreviewFromResult(){
+  const round = document.getElementById('res-round').value;
+  const existing = state.results[round] || defaultResultState();
+  for(let i=1;i<=20;i++){
+    const el = document.getElementById('r'+i);
+    if(el){
+      el.value = existing.order[i-1] || '';
+      updateDriverPreview('r'+i,'rv'+i);
+    }
+  }
+  for(let i=1;i<=8;i++){
+    const el = document.getElementById('sr'+i);
+    if(el){
+      el.value = existing.sprintOrder?.[i-1] || '';
+      updateDriverPreview('sr'+i,'srv'+i);
+    }
+  }
+  const retired = document.getElementById('retired-drivers');
+  if(retired){
+    Array.from(retired.options).forEach(opt=>{
+      opt.selected = existing.retired.includes(opt.value);
+    });
+  }
+}
+
+function resetPredictionForm(){
+  ['p1','p2','p3','p4','p5'].forEach((id, index)=>{
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+    updateDriverPreview(id, 'pv'+(index+1));
+  });
+}
+window.resetPredictionForm = resetPredictionForm;
+
+function getCheerRound(){
+  return document.getElementById('cheer-round').value || getLatestRound() || state.rounds[0] || '';
+}
+function populateCheerTargets(){
+  const select = document.getElementById('cheer-target-value');
+  const current = select.value;
+  const options = F1_DRIVERS.map(d=>d.name);
+  select.innerHTML = options.map(v=>`<option value="${escapeAttr(v)}">${escapeHtml(v)}</option>`).join('');
+  if(options.includes(current)) select.value = current;
+}
+function resetCheerForm(){
+  document.getElementById('cheer-message').value = '';
+  document.getElementById('cheer-count').textContent = '0';
+  populateCheerTargets();
+}
+window.resetCheerForm = resetCheerForm;
+function appendCheerEmoji(emoji){
+  const el = document.getElementById('cheer-message');
+  const next = (el.value + ' ' + emoji).trim().slice(0,80);
+  el.value = next;
+  document.getElementById('cheer-count').textContent = next.length;
+  el.focus();
+}
+window.appendCheerEmoji = appendCheerEmoji;
+function saveCheer(){
+  const inputName = document.getElementById('cheer-name').value.trim().replace(/\s+/g, ' ');
+  const round = getCheerRound();
+  const targetType = 'driver';
+  const targetValue = document.getElementById('cheer-target-value').value || '';
+  const message = document.getElementById('cheer-message').value.trim().replace(/\s+/g, ' ').slice(0,80);
+  if(!inputName || !round || !message){ alert('이름, 라운드, 응원 메시지를 입력해 주세요.'); return; }
+  const existingPlayer = findPlayerByNormalized(inputName);
+  const finalName = existingPlayer || inputName;
+  if(!existingPlayer) state.players.push(finalName);
+  if(!state.cheers[round]) state.cheers[round] = [];
+  state.cheers[round].unshift({name: finalName, message, targetType, targetValue, createdAt: Date.now()});
+  state.cheers[round] = state.cheers[round].slice(0,300);
+  document.getElementById('cheer-name').value = finalName;
+  document.getElementById('cheer-message').value = '';
+  document.getElementById('cheer-count').textContent = '0';
+  pushState();
+}
+window.saveCheer = saveCheer;
+function formatCheerTime(ts){
+  if(!ts) return '';
+  const d = new Date(ts);
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mi = String(d.getMinutes()).padStart(2,'0');
+  return `${mm}.${dd} ${hh}:${mi}`;
+}
+function getCheerTargetLabel(item){
+  return `드라이버 · ${item.targetValue || '-'}`;
+}
+function getCheerSummary(round){
+  const items = [...(state.cheers[round] || [])];
+  const total = items.length;
+  const uniqueFans = new Set(items.map(item=>normalizeParticipantName(item.name))).size;
+  const driverCounts = {};
+  items.filter(item=>item.targetType === 'driver').forEach(item=>driverCounts[item.targetValue] = (driverCounts[item.targetValue] || 0) + 1);
+  const topDriver = Object.entries(driverCounts).sort((a,b)=>b[1]-a[1])[0];
+  return { total, uniqueFans, topDriver };
+}
+function renderCheerboard(){
+  populateCheerTargets();
+  const round = getCheerRound();
+  const items = [...(state.cheers[round] || [])].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  const summary = getCheerSummary(round);
+  const highlight = document.getElementById('cheer-highlight');
+  highlight.innerHTML = `
+    <div class="cheer-stat"><div class="k">현재 라운드</div><div class="v">${escapeHtml(round || '-')}</div><div class="d">응원 메시지는 최신순으로 위에 보여줘요.</div></div>
+    <div class="cheer-stat"><div class="k">응원 수</div><div class="v">${summary.total}</div><div class="d">${summary.uniqueFans}명의 참가자가 메시지를 남겼어요.</div></div>
+    <div class="cheer-stat"><div class="k">가장 많이 응원받는 드라이버</div><div class="v">${escapeHtml(summary.topDriver ? summary.topDriver[0] : '-')}</div><div class="d">${summary.topDriver ? `${summary.topDriver[1]}개의 응원을 받았어요.` : '아직 드라이버 응원이 없어요.'}</div></div>
+  `;
+  document.getElementById('cheer-feed-note').textContent = round ? `${round} 응원 피드예요. 카드 안에서만 스크롤돼서 모바일에서도 보기 편해요.` : '라운드를 선택하면 응원 피드가 보여요.';
+  const feed = document.getElementById('cheer-feed');
+  feed.innerHTML = items.length ? items.map(item=>{
+    const isDriver = item.targetType === 'driver' && DRIVER_MAP[item.targetValue];
+    const targetMarkup = isDriver ? driverChip(item.targetValue) : `<span class="mini-pill">${escapeHtml(getCheerTargetLabel(item))}</span>`;
+    return `<div class="cheer-item">
+      <div class="cheer-head">
+        <div>
+          <div class="cheer-name">${escapeHtml(item.name)}</div>
+          <div class="cheer-meta"><span>${escapeHtml(round)}</span><span>·</span><span>${formatCheerTime(item.createdAt)}</span></div>
+        </div>
+        ${targetMarkup}
+      </div>
+      <div class="cheer-msg">${escapeHtml(item.message)}</div>
+      <div class="cheer-target-pill">📣 ${escapeHtml(getCheerTargetLabel(item))}</div>
+    </div>`;
+  }).join('') : '<div class="cheer-empty">아직 응원 메시지가 없어요. 첫 번째 응원을 남겨보세요 📣</div>';
+}
+
+function addPlayer(){
+  const input = document.getElementById('new-player');
+  const raw = input.value.trim().replace(/\s+/g, ' ');
+  if(!raw) return;
+  const existing = findPlayerByNormalized(raw);
+  if(existing){ alert(`이미 등록된 참가자입니다. (${existing})`); return; }
+  state.players.push(raw);
+  input.value = '';
+  pushState();
+}
+window.addPlayer = addPlayer;
+
+function removePlayer(name){
+  state.players = state.players.filter(p=>p!==name);
+  Object.keys(state.predictions).forEach(round => {
+    if(state.predictions[round]) delete state.predictions[round][name];
+  });
+  Object.keys(state.scoreBoard).forEach(round => {
+    if(state.scoreBoard[round]) delete state.scoreBoard[round][name];
+  });
+  recalcAll();
+}
+window.removePlayer = removePlayer;
+
+function renderPlayers(){
+  const el = document.getElementById('player-list');
+  el.innerHTML = state.players.length ? state.players.map(p=>`<span class="mini-pill">${escapeHtml(p)} <span style="cursor:pointer;margin-left:6px;color:#ff8f88" onclick="removePlayer('${escapeAttr(p)}')">×</span></span>`).join('') : '<div class="empty">등록된 참가자가 없습니다.</div>';
+}
+
+function addRound(){
+  const input = document.getElementById('new-round');
+  const v = input.value.trim();
+  if(!v) return;
+  if(state.rounds.includes(v)){ alert('이미 있는 라운드입니다.'); return; }
+  state.rounds.push(v);
+  input.value = '';
+  pushState();
+}
+window.addRound = addRound;
+
+function renderRounds(){
+  const el = document.getElementById('round-list');
+  el.innerHTML = state.rounds.length ? state.rounds.map(r=>{
+    const done = state.results[r] && state.results[r].order.some(Boolean) ? '<span class="mini-pill" style="border-color:#29694d;color:#91f0bf">완료</span>' : '<span class="mini-pill">대기</span>';
+    return `<div class="participant-item"><div><div class="name">${escapeHtml(r)}</div><div class="meta">${done}</div></div><button onclick="removeRound('${escapeAttr(r)}')">삭제</button></div>`;
+  }).join('') : '<div class="empty">등록된 라운드가 없습니다.</div>';
+}
+
+function removeRound(round){
+  if(!confirm(`${round} 라운드를 삭제할까요? 관련 예측과 결과도 함께 삭제됩니다.`)) return;
+  state.rounds = state.rounds.filter(r=>r!==round);
+  delete state.predictions[round];
+  delete state.results[round];
+  delete state.scoreBoard[round];
+  pushState();
+}
+window.removeRound = removeRound;
+
+function savePrediction(){
+  const inputName = document.getElementById('pred-name').value.trim().replace(/\s+/g, ' ');
+  const round = document.getElementById('pred-round').value;
+  const picks = [1,2,3,4,5].map(i=>document.getElementById('p'+i).value);
+  if(!inputName || !round){ alert('이름과 라운드를 입력하세요.'); return; }
+  if(picks.some(v=>!v)){ alert('1위부터 5위까지 모두 선택하세요.'); return; }
+  if(new Set(picks).size !== picks.length){ alert('같은 드라이버를 중복 선택할 수 없습니다.'); return; }
+  const existingPlayer = findPlayerByNormalized(inputName);
+  const finalName = existingPlayer || inputName;
+  if(!existingPlayer) state.players.push(finalName);
+  if(!state.predictions[round]) state.predictions[round] = {};
+  state.predictions[round][finalName] = picks;
+  document.getElementById('pred-name').value = finalName;
+  recalcAll();
+  alert(`${finalName}님의 ${round} 예측이 저장되었습니다.`);
+}
+window.savePrediction = savePrediction;
+
+function renderPredList(){
+  const round = document.getElementById('pred-round').value;
+  document.getElementById('predict-round-label').textContent = round || '-';
+  const container = document.getElementById('pred-list');
+  const preds = state.predictions[round] || {};
+  const names = Object.keys(preds);
+  document.getElementById('quick-pred-count').textContent = names.length;
+  if(!names.length){ container.innerHTML = '<div class="empty">아직 제출된 예측이 없습니다.</div>'; return; }
+  container.innerHTML = `<div class="table-wrap"><table>
+    <thead><tr><th>참가자</th><th>예측 TOP5</th></tr></thead>
+    <tbody>${
+      names.map(name=>`<tr>
+        <td style="font-weight:900">${escapeHtml(name)}</td>
+        <td><div class="stack">${preds[name].map(driverChip).join('')}</div></td>
+      </tr>`).join('')
+    }</tbody></table></div>`;
+}
+
+function getSelectedRetired(){
+  return Array.from(document.getElementById('retired-drivers').selectedOptions).map(o=>o.value);
+}
+
+function saveResult(){
+  const round = document.getElementById('res-round').value;
+  if(!round){ alert('라운드를 먼저 선택하세요.'); return; }
+  const picks = [];
+  for(let i=1;i<=20;i++) picks.push(document.getElementById('r'+i).value);
+  const filled = picks.filter(Boolean);
+  if(filled.length !== 20){ alert('1위부터 20위까지 모두 입력하세요.'); return; }
+  if(new Set(filled).size !== filled.length){ alert('결과에서 같은 드라이버를 중복 선택할 수 없습니다.'); return; }
+
+  const sprintPicks = [];
+  for(let i=1;i<=8;i++) sprintPicks.push(document.getElementById('sr'+i)?.value || '');
+  const sprintFilled = sprintPicks.filter(Boolean);
+  if(sprintFilled.length && sprintFilled.length !== 8){ alert('스프린트 결과를 반영하려면 1위부터 8위까지 모두 입력하세요.'); return; }
+  if(new Set(sprintFilled).size !== sprintFilled.length){ alert('스프린트 결과에서 같은 드라이버를 중복 선택할 수 없습니다.'); return; }
+
+  const retired = getSelectedRetired().filter(d=>!filled.includes(d) && !sprintFilled.includes(d));
+  const prev = state.results[round] || {};
+  const now = Date.now();
+  state.results[round] = { order: picks, retired, sprintOrder: sprintFilled.length ? sprintPicks : Array(8).fill(''), updatedAt: now, createdAt: prev.createdAt || now };
+  recalcAll();
+  showResultSummary(round);
+  alert(`${round} 결과가 저장되었습니다.`);
+}
+window.saveResult = saveResult;
+
+function calcScores(round){
+  const result = state.results[round];
+  if(!result || !result.order) return;
+  const actualTop5 = result.order.slice(0,5);
+  const preds = state.predictions[round] || {};
+  state.scoreBoard[round] = state.scoreBoard[round] || {};
+  Object.keys(preds).forEach(name=>{
+    const picks = preds[name];
+    let score = 0, exact = 0, partial = 0;
+    picks.forEach((driver, idx)=>{
+      if(driver === actualTop5[idx]){
+        score += state.scores.exact + (idx===0 ? state.scores.first : 0);
+        exact += 1;
+      } else if(actualTop5.includes(driver)){
+        score += state.scores.partial;
+        partial += 1;
+      }
+    });
+    const perfect = exact === 5 ? 1 : 0;
+    state.scoreBoard[round][name] = {score, exact, partial, perfect};
+  });
+}
+
+function getTotals(){
+  const totals = {};
+  const stats = {};
+  Object.entries(state.scoreBoard).forEach(([round, entries])=>{
+    Object.entries(entries || {}).forEach(([name, rec])=>{
+      totals[name] = (totals[name] || 0) + rec.score;
+      stats[name] = stats[name] || {exact:0, partial:0, entries:0, perfect:0, rounds:{}};
+      stats[name].exact += rec.exact;
+      stats[name].partial += rec.partial;
+      stats[name].entries += 1;
+      stats[name].perfect += rec.perfect;
+      stats[name].rounds[round] = rec.score;
+    });
+  });
+  state.statsByPlayer = stats;
+  return totals;
+}
+
+function getParticipantSeasonStats(){
+  const totals = getTotals();
+  const stats = {};
+  Object.keys(totals).forEach(name=>{
+    const base = state.statsByPlayer[name] || {exact:0, partial:0, entries:0, perfect:0, rounds:{}};
+    stats[name] = {
+      total: totals[name] || 0,
+      exact: base.exact || 0,
+      partial: base.partial || 0,
+      entries: base.entries || 0,
+      perfect: base.perfect || 0,
+      rounds: base.rounds || {},
+      wins: 0,
+      podiums: 0
+    };
+  });
+
+  Object.keys(state.scoreBoard || {}).forEach(round=>{
+    const ordered = getRoundPredictionPodium(round);
+    ordered.slice(0,3).forEach(([name], idx)=>{
+      if(!stats[name]){
+        stats[name] = {total:0, exact:0, partial:0, entries:0, perfect:0, rounds:{}, wins:0, podiums:0};
+      }
+      stats[name].podiums += 1;
+      if(idx === 0) stats[name].wins += 1;
+    });
+  });
+
+  return stats;
+}
+
+function renderRankingScoreGuide(){
+  const root = document.getElementById('ranking-score-guide');
+  if(!root) return;
+  root.innerHTML = `
+    <div class="card-title">점수 안내</div>
+    <div class="note">정확 일치는 <strong>내가 고른 드라이버가 실제 결과와 같은 순위</strong>로 들어왔을 때예요. 예를 들어 2위로 예측한 선수가 실제 2위를 하면 정확 일치입니다. 1위 적중은 정확 일치 점수에 <strong>우승 보너스</strong>가 추가됩니다.</div>
+    <div class="score-guide-grid">
+      <div class="score-guide-item"><div class="k">정확 일치</div><div class="v">${state.scores.exact}점</div><div class="d">예측 순위와 실제 순위가 같을 때</div></div>
+      <div class="score-guide-item"><div class="k">포디움 내 있음</div><div class="v">${state.scores.partial}점</div><div class="d">TOP5 안에는 들었지만 순위가 다를 때</div></div>
+      <div class="score-guide-item"><div class="k">1위 정확 보너스</div><div class="v">+${state.scores.first}점</div><div class="d">우승자를 정확히 맞히면 정확 일치 점수에 추가</div></div>
+    </div>
+  `;
+}
+
+function renderRanking(search=''){
+  const participantStats = getParticipantSeasonStats();
+  updateHeaderStats();
+  renderRankingScoreGuide();
+  const rows = Object.entries(participantStats).sort((a,b)=>{
+    if(b[1].total !== a[1].total) return b[1].total - a[1].total;
+    if(b[1].wins !== a[1].wins) return b[1].wins - a[1].wins;
+    if(b[1].podiums !== a[1].podiums) return b[1].podiums - a[1].podiums;
+    if(b[1].exact !== a[1].exact) return b[1].exact - a[1].exact;
+    if(b[1].partial !== a[1].partial) return b[1].partial - a[1].partial;
+    return b[1].entries - a[1].entries;
+  });
+  const filtered = search ? rows.filter(([name]) => name.toLowerCase().includes(search.toLowerCase())) : rows;
+  const body = document.getElementById('ranking-table');
+  if(!filtered.length){
+    body.innerHTML = '<tr><td colspan="9"><div class="empty">아직 랭킹 데이터가 없습니다.</div></td></tr>';
+    return;
+  }
+  body.innerHTML = filtered.map(([name,st])=>{
+    const rank = rows.findIndex(r=>r[0]===name)+1;
+    const badgeClass = rank===1?'r1':rank===2?'r2':rank===3?'r3':'';
+    const roundStrip = state.rounds.map(r=>{
+      const val = st.rounds[r];
+      return `<span class="score-chip" title="${escapeHtml(r)}">${val===undefined?'-':val}</span>`;
+    }).join('');
+    return `<tr>
+      <td><span class="rank-badge ${badgeClass}">${rank}</span></td>
+      <td style="font-size:18px;font-weight:900">${escapeHtml(name)}</td>
+      <td style="text-align:center;font-weight:900;font-size:20px;color:var(--cyan)">${st.total}</td>
+      <td style="text-align:center">${st.wins}</td>
+      <td style="text-align:center">${st.podiums}</td>
+      <td style="text-align:center">${st.exact}</td>
+      <td style="text-align:center">${st.partial}</td>
+      <td style="text-align:center">${st.entries}</td>
+      <td><div class="round-score-strip">${roundStrip}</div></td>
+    </tr>`;
+  }).join('');
+}
+
+function showResultSummary(round){
+  const result = state.results[round] || defaultResultState();
+  const entries = Object.entries(state.scoreBoard[round] || {}).sort((a,b)=>b[1].score-a[1].score);
+  const root = document.getElementById('result-summary');
+  const detail = document.getElementById('result-detail');
+  root.style.display = 'block';
+  detail.innerHTML = `
+    <div class="card-title" style="margin-bottom:10px">TOP 5 결과</div>
+    <div class="stack" style="margin-bottom:12px">${result.order.slice(0,5).map(driverChip).join('')}</div>
+    ${(result.sprintOrder || []).some(Boolean) ? `<div class="card-title" style="margin-bottom:10px">스프린트 TOP 8</div><div class="stack" style="margin-bottom:12px">${result.sprintOrder.filter(Boolean).map(driverChip).join('')}</div>` : ''}
+    <div class="card-title" style="margin-bottom:10px">리타이어</div>
+    <div class="stack" style="margin-bottom:12px">${result.retired.length ? result.retired.map(driverChip).join('') : '<span class="mini-pill">없음</span>'}</div>
+    ${entries.length ? `<div class="table-wrap"><table>
+      <thead><tr><th>참가자</th><th style="text-align:center">점수</th><th style="text-align:center">정확</th><th style="text-align:center">부분</th></tr></thead>
+      <tbody>${entries.map(([name,rec],idx)=>`<tr>
+        <td style="font-weight:900">${idx===0?'🏆 ':''}${escapeHtml(name)}</td>
+        <td style="text-align:center;color:var(--cyan);font-weight:900">${rec.score}</td>
+        <td style="text-align:center">${rec.exact}</td>
+        <td style="text-align:center">${rec.partial}</td>
+      </tr>`).join('')}</tbody></table></div>` : '<div class="empty">해당 라운드 예측이 없습니다.</div>'}
+  `;
+}
+
+function renderPredictDashboard(){
+  const round = getLatestRound();
+  document.getElementById('dash-round').textContent = round || '-';
+  const preds = state.predictions[round] || {};
+  const entries = Object.entries(preds);
+  document.getElementById('dash-submit-count').textContent = entries.length;
+  document.getElementById('dash-participants').textContent = entries.length;
+
+  const posOne = {};
+  entries.forEach(([,picks]) => { if(picks[0]) posOne[picks[0]] = (posOne[picks[0]]||0)+1; });
+  const bestP1 = Object.entries(posOne).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('dash-top-p1').textContent = bestP1 ? bestP1[0] : '-';
+  document.getElementById('dash-top-p1-count').textContent = bestP1 ? `선택 ${bestP1[1]}회` : '선택 0회';
+
+  const freq = {};
+  entries.forEach(([, picks]) => picks.forEach(d => { freq[d] = (freq[d]||0)+1; }));
+  const sortedDrivers = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxCount = sortedDrivers.length ? sortedDrivers[0][1] : 1;
+  const cards = document.getElementById('driver-ranking-cards');
+  cards.innerHTML = sortedDrivers.length ? sortedDrivers.map(([driver,count], idx)=>{
+    const d = DRIVER_MAP[driver];
+    const width = Math.max(10, Math.round((count/maxCount)*100));
+    return `<div class="driver-rank-card ${idx===0?'top1':idx===1?'top2':idx===2?'top3':''}">
+      <div class="rank">${idx+1}</div>
+      <div>
+        <div class="name">${driver}</div>
+        <div class="team"><span class="dot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${d.color};margin-right:6px"></span>${d.team}</div>
+      </div>
+      <div>
+        <div class="count">${count}</div>
+        <div class="count-label">TOTAL PICKS</div>
+      </div>
+      <div class="bar" style="width:${width}%;background:linear-gradient(90deg, ${d.color}, transparent)"></div>
+    </div>`;
+  }).join('') : '<div class="empty">아직 제출된 예측이 없습니다.</div>';
+
+  const live = document.getElementById('participant-live-list');
+  live.innerHTML = entries.length ? entries.map(([name,picks])=>`
+    <div class="participant-item">
+      <div>
+        <div class="name">${escapeHtml(name)}</div>
+        <div class="meta">1위 예측: ${escapeHtml(picks[0] || '-')}</div>
+      </div>
+      <div class="stack">${picks.slice(0,3).map(driverChip).join('')}</div>
+    </div>`).join('') : '<div class="empty">참가자가 아직 없습니다.</div>';
+
+  const breakdown = document.getElementById('position-breakdown');
+  const positionHtml = [0,1,2,3,4].map(pos=>{
+    const counts = {};
+    entries.forEach(([, picks]) => {
+      const d = picks[pos];
+      if(d) counts[d] = (counts[d]||0)+1;
+    });
+    const top = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,3);
+    return `<div style="margin-bottom:14px">
+      <div class="card-title" style="margin-bottom:6px">${pos+1}위 최다 선택</div>
+      ${top.length ? `<div class="stack">${top.map(([name,c])=>`${driverChip(name)}<span class="mini-pill">${c}표</span>`).join('')}</div>` : '<div class="empty">데이터 없음</div>'}
+    </div>`;
+  }).join('');
+  breakdown.innerHTML = positionHtml;
+}
+
+function computeDriverSeasonStats(){
+  const stats = {};
+  F1_DRIVERS.forEach(d=>{
+    stats[d.name] = {wins:0,podiums:0,avgPosSum:0,avgPosCount:0,retires:0,top10:0,best:999,points:0,gpPoints:0,sprintPoints:0,sprintWins:0};
+  });
+  Object.values(state.results).forEach(result=>{
+    if(!result || !result.order) return;
+    result.order.forEach((driver, idx)=>{
+      if(!driver || !stats[driver]) return;
+      const pos = idx+1;
+      stats[driver].avgPosSum += pos;
+      stats[driver].avgPosCount += 1;
+      stats[driver].best = Math.min(stats[driver].best, pos);
+      if(pos===1) stats[driver].wins += 1;
+      if(pos<=3) stats[driver].podiums += 1;
+      if(pos<=10) stats[driver].top10 += 1;
+      const gpPts = OFFICIAL_F1_POINTS[idx] || 0;
+      stats[driver].gpPoints += gpPts;
+      stats[driver].points += gpPts;
+    });
+    (result.sprintOrder || []).forEach((driver, idx)=>{
+      if(!driver || !stats[driver]) return;
+      const sprintPts = OFFICIAL_SPRINT_POINTS[idx] || 0;
+      stats[driver].sprintPoints += sprintPts;
+      stats[driver].points += sprintPts;
+      if(idx===0) stats[driver].sprintWins += 1;
+    });
+    (result.retired || []).forEach(driver=>{
+      if(stats[driver]) stats[driver].retires += 1;
+    });
+  });
+  return stats;
+}
+
+function getRoundPredictionPodium(round){
+  return Object.entries(state.scoreBoard[round] || {}).sort((a,b)=>{
+    if(b[1].score !== a[1].score) return b[1].score - a[1].score;
+    if(b[1].exact !== a[1].exact) return b[1].exact - a[1].exact;
+    return b[1].partial - a[1].partial;
+  });
+}
+
+function renderRoundPodium(round){
+  const ordered = getRoundPredictionPodium(round).slice(0,3);
+  if(!ordered.length) return '<div class="empty">아직 이 라운드의 예측 점수가 없습니다.</div>';
+  const places = ['p1','p2','p3'];
+  return `<div class="podium-grid">${ordered.map(([name,rec], idx)=>`
+    <div class="podium-card ${places[idx]}">
+      <div class="place">${idx+1}위 PREDICTION PODIUM</div>
+      <div class="podium-name">${escapeHtml(name)}</div>
+      <div class="podium-score">${rec.score}</div>
+      <div class="podium-meta">정확 ${rec.exact}개 · 부분 ${rec.partial}개${rec.perfect ? ' · 퍼펙트 예측' : ''}</div>
+    </div>`).join('')}</div>`;
+}
+
+function renderOfficialPoints(result){
+  const gpRows = result.order.slice(0,10).map((driver, idx)=>{
+    if(!driver) return '';
+    return `<span class="points-chip">${driverChip(driver)}<span class="points-type">GP</span><span class="points-badge">+${OFFICIAL_F1_POINTS[idx]}P</span></span>`;
+  }).filter(Boolean).join('');
+  const sprintRows = (result.sprintOrder || []).slice(0,8).map((driver, idx)=>{
+    if(!driver) return '';
+    return `<span class="points-chip sprint">${driverChip(driver)}<span class="points-type">SPR</span><span class="points-badge">+${OFFICIAL_SPRINT_POINTS[idx]}P</span></span>`;
+  }).filter(Boolean).join('');
+  return `
+    <div style="margin-bottom:${sprintRows ? 10 : 0}px">
+      <div class="card-title" style="margin-bottom:8px">그랑프리 포인트</div>
+      <div class="official-points-row">${gpRows || '<span class="mini-pill">점수 데이터 없음</span>'}</div>
+    </div>
+    ${sprintRows ? `<div><div class="card-title" style="margin-bottom:8px">스프린트 포인트</div><div class="sprint-points-row">${sprintRows}</div></div>` : ''}
+  `;
+}
+
+function renderHistory(){
+  const resultsRoot = document.getElementById('history-results');
+  const seasonStory = document.getElementById('season-story');
+  const driverStatsTable = document.getElementById('driver-stats-table');
+  const constructorStatsTable = document.getElementById('constructor-stats-table');
+
+  const doneRounds = state.rounds.filter(r=>state.results[r] && state.results[r].order && state.results[r].order.some(Boolean)).slice().sort((a,b)=>{
+    const ra = state.results[a] || {};
+    const rb = state.results[b] || {};
+    const ta = Number(ra.updatedAt || ra.createdAt || 0);
+    const tb = Number(rb.updatedAt || rb.createdAt || 0);
+    if(tb !== ta) return tb - ta;
+    return state.rounds.indexOf(b) - state.rounds.indexOf(a);
+  });
+  resultsRoot.innerHTML = doneRounds.length ? doneRounds.map((round, idx)=>{
+    const res = state.results[round];
+    const gpOrder = res.order.slice(0,10).filter(Boolean);
+    const sprintOrder = (res.sprintOrder || []).slice(0,8).filter(Boolean);
+    const gpLeader = gpOrder[0] ? escapeHtml(gpOrder[0]) : '-';
+    const summaryMeta = `GP 우승 ${gpLeader}${sprintOrder.length ? ` · 스프린트 ${sprintOrder.length}명 반영` : ' · 스프린트 없음'}`;
+    return `<details class="history-round-details" ${idx===0 ? 'open' : ''}>
+      <summary class="history-round-summary">
+        <div class="left">
+          <div class="round-name">${escapeHtml(round)}</div>
+          <div class="round-meta">${summaryMeta}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="mini-pill">완료</div>
+          <div class="chev">⌄</div>
+        </div>
+      </summary>
+      <div class="history-round-body">
+        <div class="compact-round-grid">
+          <div class="compact-result-card">
+            <div class="card-title">그랑프리 포인트 순위</div>
+            <div class="driver-lineup">${renderCompactClassification(gpOrder, OFFICIAL_F1_POINTS, 'PTS')}</div>
+          </div>
+          <div class="compact-result-card">
+            <div class="card-title">스프린트 포인트 순위</div>
+            <div class="driver-lineup">${sprintOrder.length ? renderCompactClassification(sprintOrder, OFFICIAL_SPRINT_POINTS, 'SPR') : '<div class="empty-inline">스프린트 결과가 없는 라운드예요.</div>'}</div>
+          </div>
+        </div>
+      </div>
+    </details>`;
+  }).join('') : '<div class="empty">아직 완료된 라운드가 없습니다.</div>';
+
+  const driverStats = computeDriverSeasonStats();
+  const ranked = Object.entries(driverStats).filter(([,v])=>v.avgPosCount>0 || v.retires>0 || (v.sprintWins||0)>0);
+
+  const winsSorted = [...ranked].sort((a,b)=>b[1].wins-a[1].wins || a[1].best-b[1].best);
+  const consistentSorted = [...ranked].filter(([,v])=>v.avgPosCount>0).sort((a,b)=>(a[1].avgPosSum/a[1].avgPosCount)-(b[1].avgPosSum/b[1].avgPosCount));
+  const retireSorted = [...ranked].sort((a,b)=>b[1].retires-a[1].retires);
+  const sprintSorted = [...ranked].filter(([,v])=>(v.sprintWins || 0) > 0).sort((a,b)=>(b[1].sprintWins||0)-(a[1].sprintWins||0) || (b[1].sprintPoints||0)-(a[1].sprintPoints||0));
+
+  const topWin = winsSorted[0];
+  const topConsistent = consistentSorted[0];
+  const topRetire = retireSorted[0];
+  const topSprint = sprintSorted[0];
+
+  document.getElementById('story-wins').textContent = topWin ? topWin[0] : '-';
+  document.getElementById('story-wins-sub').textContent = topWin ? `${topWin[1].wins}승, 포디움 ${topWin[1].podiums}회` : '아직 결과가 없습니다.';
+  document.getElementById('story-consistent').textContent = topConsistent ? topConsistent[0] : '-';
+  document.getElementById('story-consistent-sub').textContent = topConsistent ? `평균 순위 ${(topConsistent[1].avgPosSum/topConsistent[1].avgPosCount).toFixed(1)}` : '평균 순위 기준';
+  document.getElementById('story-retire').textContent = topRetire && topRetire[1].retires > 0 ? topRetire[0] : '-';
+  document.getElementById('story-retire-sub').textContent = topRetire && topRetire[1].retires > 0 ? `리타이어 ${topRetire[1].retires}회` : 'DNF 데이터 기준';
+  document.getElementById('story-sprint').textContent = topSprint ? topSprint[0] : '-';
+  document.getElementById('story-sprint-sub').textContent = topSprint ? `스프린트 ${(topSprint[1].sprintWins||0)}승 · SPR ${(topSprint[1].sprintPoints||0)}점` : '스프린트 우승 기준';
+
+  const funLines = [];
+  if(topWin) funLines.push(`<div class="participant-item"><div><div class="name">우승 머신</div><div class="meta">${escapeHtml(topWin[0])}가 이번 시즌 ${topWin[1].wins}번 우승했어요.</div></div><div>${driverChip(topWin[0])}</div></div>`);
+  if(topConsistent) funLines.push(`<div class="participant-item"><div><div class="name">꾸준함의 왕</div><div class="meta">${escapeHtml(topConsistent[0])}의 평균 순위는 ${(topConsistent[1].avgPosSum/topConsistent[1].avgPosCount).toFixed(1)}위예요.</div></div><div>${driverChip(topConsistent[0])}</div></div>`);
+  if(topRetire && topRetire[1].retires > 0) funLines.push(`<div class="participant-item"><div><div class="name">불운의 드라이버</div><div class="meta">${escapeHtml(topRetire[0])}가 리타이어를 ${topRetire[1].retires}번 기록했어요.</div></div><div>${driverChip(topRetire[0])}</div></div>`);
+  if(topSprint) funLines.push(`<div class="participant-item"><div><div class="name">스프린트 최강자</div><div class="meta">${escapeHtml(topSprint[0])}가 스프린트에서 ${(topSprint[1].sprintWins||0)}번 1위를 기록했고, 스프린트 누적 ${(topSprint[1].sprintPoints||0)}점을 가져갔어요.</div></div><div>${driverChip(topSprint[0])}</div></div>`);
+  seasonStory.innerHTML = funLines.length ? funLines.join('') : '<div class="empty">아직 시즌 통계를 보여줄 데이터가 없습니다.</div>';
+
+  if(!ranked.length){
+    driverStatsTable.innerHTML = '<div class="empty">드라이버 챔피언십을 보여줄 결과 데이터가 아직 없습니다.</div>';
+    constructorStatsTable.innerHTML = '<div class="empty">컨스트럭터 챔피언십을 보여줄 결과 데이터가 아직 없습니다.</div>';
+    return;
+  }
+
+  const rows = [...ranked].sort((a,b)=>{
+    if(b[1].points !== a[1].points) return b[1].points - a[1].points;
+    if(b[1].wins !== a[1].wins) return b[1].wins - a[1].wins;
+    if(b[1].podiums !== a[1].podiums) return b[1].podiums - a[1].podiums;
+    if(a[1].best !== b[1].best) return a[1].best - b[1].best;
+    const aAvg = a[1].avgPosCount ? (a[1].avgPosSum / a[1].avgPosCount) : 999;
+    const bAvg = b[1].avgPosCount ? (b[1].avgPosSum / b[1].avgPosCount) : 999;
+    return aAvg - bAvg;
+  });
+
+  const constructorStats = {};
+  rows.forEach(([name, rec])=>{
+    const driver = DRIVER_MAP[name];
+    if(!driver) return;
+    if(!constructorStats[driver.team]) constructorStats[driver.team] = {points:0,wins:0,podiums:0,best:999,gpPoints:0,sprintPoints:0,drivers:[]};
+    constructorStats[driver.team].points += rec.points;
+    constructorStats[driver.team].wins += rec.wins;
+    constructorStats[driver.team].podiums += rec.podiums;
+    constructorStats[driver.team].gpPoints += rec.gpPoints || 0;
+    constructorStats[driver.team].sprintPoints += rec.sprintPoints || 0;
+    constructorStats[driver.team].best = Math.min(constructorStats[driver.team].best, rec.best);
+    constructorStats[driver.team].drivers.push(name);
+  });
+
+  const constructorRows = Object.entries(constructorStats).sort((a,b)=>{
+    if(b[1].points !== a[1].points) return b[1].points - a[1].points;
+    if(b[1].wins !== a[1].wins) return b[1].wins - a[1].wins;
+    if(b[1].podiums !== a[1].podiums) return b[1].podiums - a[1].podiums;
+    return a[1].best - b[1].best;
+  });
+
+  driverStatsTable.innerHTML = `
+    <div class="championship-scroll"><div class="table-wrap"><table>
+      <thead><tr><th style="text-align:center">랭킹</th><th>드라이버</th><th style="text-align:center">포인트</th><th style="text-align:center">GP</th><th style="text-align:center">SPR</th><th style="text-align:center">우승</th><th style="text-align:center">포디움</th><th style="text-align:center">리타이어</th></tr></thead>
+      <tbody>${rows.map(([name,rec], idx)=>`
+        <tr>
+          <td style="text-align:center"><span class="rank-badge ${idx===0?'r1':idx===1?'r2':idx===2?'r3':''}">${idx+1}</span></td>
+          <td><div class="stack">${driverChip(name)}</div></td>
+          <td style="text-align:center;color:var(--cyan);font-weight:900">${rec.points}</td>
+          <td style="text-align:center">${rec.gpPoints || 0}</td>
+          <td style="text-align:center">${rec.sprintPoints || 0}</td>
+          <td style="text-align:center">${rec.wins}</td>
+          <td style="text-align:center">${rec.podiums}</td>
+          <td style="text-align:center">${rec.retires}</td>
+        </tr>`).join('')}</tbody>
+    </table></div></div>`;
+
+  constructorStatsTable.innerHTML = `
+    <div class="championship-scroll"><div class="table-wrap"><table>
+      <thead><tr><th style="text-align:center">랭킹</th><th>팀</th><th style="text-align:center">포인트</th><th style="text-align:center">GP</th><th style="text-align:center">SPR</th><th style="text-align:center">우승</th><th style="text-align:center">포디움</th><th>드라이버</th></tr></thead>
+      <tbody>${constructorRows.map(([team,rec], idx)=>`
+        <tr>
+          <td style="text-align:center"><span class="rank-badge ${idx===0?'r1':idx===1?'r2':idx===2?'r3':''}">${idx+1}</span></td>
+          <td><span class="mini-pill" style="border-color:${TEAM_MAP[team] || 'var(--line)'};box-shadow:inset 0 0 0 1px ${TEAM_MAP[team] || 'transparent'}">${escapeHtml(team)}</span></td>
+          <td style="text-align:center;color:var(--cyan);font-weight:900">${rec.points}</td>
+          <td style="text-align:center">${rec.gpPoints || 0}</td>
+          <td style="text-align:center">${rec.sprintPoints || 0}</td>
+          <td style="text-align:center">${rec.wins}</td>
+          <td style="text-align:center">${rec.podiums}</td>
+          <td><div class="stack">${rec.drivers.map(driverChip).join('')}</div></td>
+        </tr>`).join('')}</tbody>
+    </table></div></div>`;
+}
+
+function saveScoreSettings(){
+  state.scores.exact = +document.getElementById('score-exact').value || 3;
+  state.scores.partial = +document.getElementById('score-partial').value || 1;
+  state.scores.first = +document.getElementById('score-first').value || 5;
+  recalcAll();
+  alert('점수 설정이 저장되었습니다.');
+}
+window.saveScoreSettings = saveScoreSettings;
+
+function recalcAll(){
+  Object.keys(state.results).forEach(round => calcScores(round));
+  pushState();
+}
+function updateHeaderStats(){
+  const totals = getTotals();
+  const entries = Object.entries(totals).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('stat-players').textContent = state.players.length;
+  document.getElementById('stat-rounds').textContent = Object.keys(state.results).filter(r=>state.results[r]?.order?.some(Boolean)).length;
+  document.getElementById('stat-best').textContent = entries[0] ? entries[0][1] : 0;
+  document.getElementById('stat-best-name').textContent = entries[0] ? entries[0][0] : '-';
+  const perfect = Object.values(state.statsByPlayer || {}).reduce((sum, rec)=>sum + (rec.perfect || 0), 0);
+  document.getElementById('stat-perfect').textContent = perfect;
+}
+
+function resetAll(){
+  if(!confirm('모든 데이터를 초기화할까요?')) return;
+  state = {
+    players:["pang"],
+    rounds:["Bahrain GP","Saudi Arabia GP","Australian GP"],
+    predictions:{},
+    results:{},
+    scoreBoard:{},
+    statsByPlayer:{},
+    cheers:{},
+    scores:{exact:3, partial:1, first:5}
+  };
+  pushState();
+}
+window.resetAll = resetAll;
+
+function hexToRgba(hex, alpha){
+  const h = hex.replace('#','');
+  const bigint = parseInt(h.length===3 ? h.split('').map(x=>x+x).join('') : h, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+function escapeAttr(s){
+  return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+}
+
+initializeSync();
+</script>
+</body>
+</html>
