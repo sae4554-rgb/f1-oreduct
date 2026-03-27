@@ -241,17 +241,29 @@ tr:hover td{background:rgba(255,255,255,.015)}
   background:#12182d;border:1px solid var(--line);font-size:11px;font-weight:900;color:#dbe1f7
 }
 .history-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.story-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px}
+.story-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px}
 .story-stat{
-  background:linear-gradient(180deg, rgba(13,17,31,.95), rgba(9,12,22,.98));
-  border:1px solid var(--line);padding:16px;position:relative
+  min-height:190px;
+  background:
+    linear-gradient(180deg, rgba(6,10,22,.96), rgba(4,8,18,.98)),
+    radial-gradient(circle at top right, rgba(19,216,255,.10), transparent 42%);
+  border:1px solid #263055;
+  padding:20px 22px 18px;
+  position:relative;
+  overflow:hidden
 }
 .story-stat:before{
-  content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:linear-gradient(90deg,var(--red),transparent)
+  content:"";position:absolute;left:0;top:0;width:100%;height:4px;background:linear-gradient(90deg,var(--red),transparent 78%)
 }
-.story-stat .label{font-size:12px;color:var(--muted);font-weight:800;margin-bottom:8px}
-.story-stat .value{font-size:28px;font-weight:900}
-.story-stat .subv{font-size:13px;color:#afbad8;margin-top:8px;line-height:1.5}
+.story-stat:after{
+  content:"";position:absolute;right:-18px;bottom:-24px;width:120px;height:120px;
+  background:radial-gradient(circle, rgba(255,255,255,.06), transparent 70%);
+  pointer-events:none
+}
+.story-stat .label{font-size:14px;color:#d6def8;font-weight:900;margin-bottom:22px;letter-spacing:-.02em}
+.story-stat .value{font-size:40px;font-weight:900;letter-spacing:-.04em;line-height:1.02}
+.story-stat .subv{font-size:14px;color:#b7c1e1;margin-top:18px;line-height:1.55}
+.story-stat .tag{display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:5px 10px;border:1px solid var(--line2);background:rgba(255,255,255,.04);font-size:11px;font-weight:900;color:#dce4ff}
 .long-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .result-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
 .result-box{background:#080b15;border:1px solid var(--line);padding:10px}
@@ -328,10 +340,28 @@ tr:hover td{background:rgba(255,255,255,.015)}
 .points-badge{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:22px;padding:0 6px;background:#151b2f;border:1px solid var(--line2);font-size:11px;font-weight:900;color:var(--cyan)}
 .reset-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 
+
+.cheer-summary-simple{display:grid;gap:10px}
+.cheer-rank-row{
+  display:grid;grid-template-columns:42px minmax(0,1fr) 70px;gap:10px;align-items:center;
+  padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)
+}
+.cheer-rank-row:last-child{border-bottom:none}
+.cheer-rank-pos{font-size:18px;font-weight:900;text-align:center}
+.cheer-rank-name{font-size:16px;font-weight:900;line-height:1.25;word-break:break-word}
+.cheer-rank-meta{font-size:12px;color:#95a0c5}
+.cheer-rank-score{justify-self:end;text-align:right}
+.cheer-rank-score .num{font-size:20px;font-weight:900;color:var(--cyan);line-height:1}
+.cheer-rank-score .lbl{font-size:11px;color:#95a0c5;letter-spacing:.08em;text-transform:uppercase}
+
 @media (max-width: 1100px){
   .grid.two,.history-grid,.long-grid,.history-main-grid,.player-round-grid{grid-template-columns:1fr}
   .grid.four{grid-template-columns:repeat(2,1fr)}
   .story-grid{grid-template-columns:1fr}
+  .story-stat{min-height:152px;padding:18px 16px}
+  .story-stat .label{margin-bottom:14px;font-size:13px}
+  .story-stat .value{font-size:32px}
+  .story-stat .subv{font-size:13px;margin-top:14px}
   .result-grid,.sprint-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media (max-width: 620px){
@@ -417,7 +447,7 @@ tr:hover td{background:rgba(255,255,255,.015)}
           <p>F1 레이스 결과 예측 & 랭킹 시스템</p>
         </div>
       </div>
-      <div class="sync-status" id="sync-status">공유 링크 모드 준비 중...</div>
+      <div class="sync-status" id="sync-status">F1을 좋아하는 사람들끼리 더 재미있게 즐기기 위해 만든 공간입니다. 예측하고 응원하면서 함께 레이스를 즐겨봐요 🏁</div>
     </div>
     <div class="live-pill"><span class="live-dot"></span><strong>LIVE PREDICTION CENTER</strong></div>
   </div>
@@ -624,29 +654,30 @@ tr:hover td{background:rgba(255,255,255,.015)}
     </div>
   </section>
 
-  <section id="history" class="section">
+  
+<section id="history" class="section">
     <div class="section-title">경기 기록</div>
 
     <div class="story-grid">
       <div class="story-stat">
-        <div class="label">시즌 최다 우승</div>
-        <div class="value" id="story-wins">-</div>
-        <div class="subv" id="story-wins-sub">아직 결과가 없습니다.</div>
+        <div class="label">챔피언십 리더</div>
+        <div class="value" id="story-leader">-</div>
+        <div class="subv" id="story-leader-sub">현재 누적 포인트 기준</div>
       </div>
       <div class="story-stat">
-        <div class="label">가장 꾸준한 선수</div>
-        <div class="value" id="story-consistent">-</div>
-        <div class="subv" id="story-consistent-sub">평균 순위 기준</div>
+        <div class="label">포디움 머신</div>
+        <div class="value" id="story-podium">-</div>
+        <div class="subv" id="story-podium-sub">포디움 횟수 기준</div>
       </div>
       <div class="story-stat">
-        <div class="label">리타이어 최다</div>
-        <div class="value" id="story-retire">-</div>
-        <div class="subv" id="story-retire-sub">DNF 데이터 기준</div>
+        <div class="label">DNF 마그넷</div>
+        <div class="value" id="story-dnf">-</div>
+        <div class="subv" id="story-dnf-sub">리타이어 기록 기준</div>
       </div>
       <div class="story-stat">
-        <div class="label">스프린트 최강자</div>
+        <div class="label">스프린트 킹</div>
         <div class="value" id="story-sprint">-</div>
-        <div class="subv" id="story-sprint-sub">스프린트 우승 기준</div>
+        <div class="subv" id="story-sprint-sub">스프린트 포인트 기준</div>
       </div>
     </div>
 
@@ -670,18 +701,13 @@ tr:hover td{background:rgba(255,255,255,.015)}
       </div>
     </div>
 
-    <div class="player-round-grid">
-      <div class="card soft">
-        <div class="card-title">참가자 라운드 결과 안내</div>
-        <div class="note">참가자별 점수, 포디움, 라운드 결과는 랭킹 페이지에서 확인할 수 있게 옮겼습니다.</div>
-        <div class="empty">랭킹 탭에서 참가자 챔피언십을 확인해 주세요.</div>
-      </div>
-      <div class="card green">
-        <div class="card-title">시즌 스토리 데이터</div>
-        <div id="season-story"></div>
-      </div>
+    <div class="card soft">
+      <div class="card-title">참가자 라운드 결과 안내</div>
+      <div class="note">참가자별 점수, 포디움, 라운드 결과는 랭킹 페이지에서 확인할 수 있게 옮겼습니다.</div>
+      <div class="empty">랭킹 탭에서 참가자 챔피언십을 확인해 주세요.</div>
     </div>
   </section>
+
 
   <section id="admin" class="section">
     <div class="lock-badge">🔒 관리자 전용 페이지</div>
@@ -850,7 +876,7 @@ function initializeSync(){
     const app = initializeApp(FIREBASE_CONFIG);
     db = getDatabase(app);
     firebaseReady = true;
-    document.getElementById('sync-status').textContent = '공유 링크 활성화됨. 같은 Firebase 데이터를 사용합니다.';
+    document.getElementById('sync-status').textContent = 'F1을 좋아하는 사람들끼리 더 재미있게 즐기기 위해 만든 공간입니다. 예측하고 응원하면서 함께 레이스를 즐겨봐요 🏁';
     onValue(ref(db, 'f1PredictionLeague'), (snapshot)=>{
       const incoming = snapshot.val();
       if(incoming){
@@ -1129,8 +1155,13 @@ function syncPreviewFromResult(){
   }
   const retired = document.getElementById('retired-drivers');
   if(retired){
+    const retiredSet = new Set(Array.isArray(existing.retired) ? existing.retired : []);
     Array.from(retired.options).forEach(opt=>{
-      opt.selected = existing.retired.includes(opt.value);
+      opt.selected = false;
+    });
+    retired.selectedIndex = -1;
+    Array.from(retired.options).forEach(opt=>{
+      if(retiredSet.has(opt.value)) opt.selected = true;
     });
   }
 }
@@ -1208,16 +1239,47 @@ function getCheerSummary(round){
   const topDriver = Object.entries(driverCounts).sort((a,b)=>b[1]-a[1])[0];
   return { total, uniqueFans, topDriver };
 }
+
+function getOverallCheerLeaders(){
+  const counts = {};
+  Object.values(state.cheers || {}).forEach(items=>{
+    (items || []).forEach(item=>{
+      const key = normalizeParticipantName(item.name);
+      if(!key) return;
+      if(!counts[key]) counts[key] = {name:item.name, count:0, latest:Number(item.createdAt||0)};
+      counts[key].count += 1;
+      if(Number(item.createdAt||0) >= counts[key].latest){
+        counts[key].latest = Number(item.createdAt||0);
+        counts[key].name = item.name;
+      }
+    });
+  });
+  return Object.values(counts).sort((a,b)=>b.count-a.count || b.latest-a.latest).slice(0,3);
+}
 function renderCheerboard(){
   populateCheerTargets();
   const round = getCheerRound();
   const items = [...(state.cheers[round] || [])].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
   const summary = getCheerSummary(round);
+  const leaders = getOverallCheerLeaders();
   const highlight = document.getElementById('cheer-highlight');
   highlight.innerHTML = `
-    <div class="cheer-stat"><div class="k">현재 라운드</div><div class="v">${escapeHtml(round || '-')}</div><div class="d">응원 메시지는 최신순으로 위에 보여줘요.</div></div>
-    <div class="cheer-stat"><div class="k">응원 수</div><div class="v">${summary.total}</div><div class="d">${summary.uniqueFans}명의 참가자가 메시지를 남겼어요.</div></div>
-    <div class="cheer-stat"><div class="k">가장 많이 응원받는 드라이버</div><div class="v">${escapeHtml(summary.topDriver ? summary.topDriver[0] : '-')}</div><div class="d">${summary.topDriver ? `${summary.topDriver[1]}개의 응원을 받았어요.` : '아직 드라이버 응원이 없어요.'}</div></div>
+    <div class="card soft" style="margin-bottom:0">
+      <div class="card-title">시즌 응원왕</div>
+      <div class="note">전체 라운드 누적 응원 기준 TOP 3</div>
+      <div class="cheer-summary-simple">
+        ${leaders.length ? leaders.map((entry, idx)=>`
+          <div class="cheer-rank-row">
+            <div class="cheer-rank-pos">${idx+1}</div>
+            <div>
+              <div class="cheer-rank-name">${escapeHtml(entry.name)}</div>
+              <div class="cheer-rank-meta">최근 응원 ${formatCheerTime(entry.latest)}</div>
+            </div>
+            <div class="cheer-rank-score"><div class="num">${entry.count}</div><div class="lbl">CHEERS</div></div>
+          </div>
+        `).join('') : '<div class="cheer-empty">아직 응원 메시지가 없어요.</div>'}
+      </div>
+    </div>
   `;
   document.getElementById('cheer-feed-note').textContent = round ? `${round} 응원 피드예요. 카드 안에서만 스크롤돼서 모바일에서도 보기 편해요.` : '라운드를 선택하면 응원 피드가 보여요.';
   const feed = document.getElementById('cheer-feed');
@@ -1237,6 +1299,7 @@ function renderCheerboard(){
     </div>`;
   }).join('') : '<div class="cheer-empty">아직 응원 메시지가 없어요. 첫 번째 응원을 남겨보세요 📣</div>';
 }
+
 
 function addPlayer(){
   const input = document.getElementById('new-player');
@@ -1357,6 +1420,7 @@ function saveResult(){
   state.results[round] = { order: picks, retired, sprintOrder: sprintFilled.length ? sprintPicks : Array(8).fill(''), updatedAt: now, createdAt: prev.createdAt || now };
   recalcAll();
   showResultSummary(round);
+  syncPreviewFromResult();
   alert(`${round} 결과가 저장되었습니다.`);
 }
 window.saveResult = saveResult;
@@ -1646,7 +1710,6 @@ function renderOfficialPoints(result){
 
 function renderHistory(){
   const resultsRoot = document.getElementById('history-results');
-  const seasonStory = document.getElementById('season-story');
   const driverStatsTable = document.getElementById('driver-stats-table');
   const constructorStatsTable = document.getElementById('constructor-stats-table');
 
@@ -1690,36 +1753,31 @@ function renderHistory(){
     </details>`;
   }).join('') : '<div class="empty">아직 완료된 라운드가 없습니다.</div>';
 
+  
   const driverStats = computeDriverSeasonStats();
   const ranked = Object.entries(driverStats).filter(([,v])=>v.avgPosCount>0 || v.retires>0 || (v.sprintWins||0)>0);
 
-  const winsSorted = [...ranked].sort((a,b)=>b[1].wins-a[1].wins || a[1].best-b[1].best);
-  const consistentSorted = [...ranked].filter(([,v])=>v.avgPosCount>0).sort((a,b)=>(a[1].avgPosSum/a[1].avgPosCount)-(b[1].avgPosSum/b[1].avgPosCount));
-  const retireSorted = [...ranked].sort((a,b)=>b[1].retires-a[1].retires);
-  const sprintSorted = [...ranked].filter(([,v])=>(v.sprintWins || 0) > 0).sort((a,b)=>(b[1].sprintWins||0)-(a[1].sprintWins||0) || (b[1].sprintPoints||0)-(a[1].sprintPoints||0));
+  const leaderSorted = [...ranked].sort((a,b)=>b[1].points-a[1].points || b[1].wins-a[1].wins || b[1].podiums-a[1].podiums);
+  const podiumSorted = [...ranked].sort((a,b)=>b[1].podiums-a[1].podiums || b[1].wins-a[1].wins || b[1].points-a[1].points);
+  const retireSorted = [...ranked].sort((a,b)=>b[1].retires-a[1].retires || b[1].avgPosCount-a[1].avgPosCount);
+  const sprintSorted = [...ranked].filter(([,v])=>(v.sprintPoints || 0) > 0).sort((a,b)=>(b[1].sprintPoints||0)-(a[1].sprintPoints||0) || (b[1].sprintWins||0)-(a[1].sprintWins||0));
 
-  const topWin = winsSorted[0];
-  const topConsistent = consistentSorted[0];
+  const topLeader = leaderSorted[0];
+  const topPodium = podiumSorted[0];
   const topRetire = retireSorted[0];
   const topSprint = sprintSorted[0];
 
-  document.getElementById('story-wins').textContent = topWin ? topWin[0] : '-';
-  document.getElementById('story-wins-sub').textContent = topWin ? `${topWin[1].wins}승, 포디움 ${topWin[1].podiums}회` : '아직 결과가 없습니다.';
-  document.getElementById('story-consistent').textContent = topConsistent ? topConsistent[0] : '-';
-  document.getElementById('story-consistent-sub').textContent = topConsistent ? `평균 순위 ${(topConsistent[1].avgPosSum/topConsistent[1].avgPosCount).toFixed(1)}` : '평균 순위 기준';
-  document.getElementById('story-retire').textContent = topRetire && topRetire[1].retires > 0 ? topRetire[0] : '-';
-  document.getElementById('story-retire-sub').textContent = topRetire && topRetire[1].retires > 0 ? `리타이어 ${topRetire[1].retires}회` : 'DNF 데이터 기준';
+  document.getElementById('story-leader').textContent = topLeader ? topLeader[0] : '-';
+  document.getElementById('story-leader-sub').innerHTML = topLeader ? `${topLeader[1].points}점 · ${topLeader[1].wins}승 · 포디움 ${topLeader[1].podiums}회 <span class="tag">WDC LEADER</span>` : '현재 누적 포인트 기준';
+  document.getElementById('story-podium').textContent = topPodium ? topPodium[0] : '-';
+  document.getElementById('story-podium-sub').innerHTML = topPodium ? `포디움 ${topPodium[1].podiums}회 · 우승 ${topPodium[1].wins}회 <span class="tag">PODIUM MACHINE</span>` : '포디움 횟수 기준';
+  document.getElementById('story-dnf').textContent = topRetire && topRetire[1].retires > 0 ? topRetire[0] : '-';
+  document.getElementById('story-dnf-sub').innerHTML = topRetire && topRetire[1].retires > 0 ? `리타이어 ${topRetire[1].retires}회 · 완주가 더 필요해요 <span class="tag">DNF ALERT</span>` : '아직 눈에 띄는 DNF 기록이 없어요.';
   document.getElementById('story-sprint').textContent = topSprint ? topSprint[0] : '-';
-  document.getElementById('story-sprint-sub').textContent = topSprint ? `스프린트 ${(topSprint[1].sprintWins||0)}승 · SPR ${(topSprint[1].sprintPoints||0)}점` : '스프린트 우승 기준';
-
-  const funLines = [];
-  if(topWin) funLines.push(`<div class="participant-item"><div><div class="name">우승 머신</div><div class="meta">${escapeHtml(topWin[0])}가 이번 시즌 ${topWin[1].wins}번 우승했어요.</div></div><div>${driverChip(topWin[0])}</div></div>`);
-  if(topConsistent) funLines.push(`<div class="participant-item"><div><div class="name">꾸준함의 왕</div><div class="meta">${escapeHtml(topConsistent[0])}의 평균 순위는 ${(topConsistent[1].avgPosSum/topConsistent[1].avgPosCount).toFixed(1)}위예요.</div></div><div>${driverChip(topConsistent[0])}</div></div>`);
-  if(topRetire && topRetire[1].retires > 0) funLines.push(`<div class="participant-item"><div><div class="name">불운의 드라이버</div><div class="meta">${escapeHtml(topRetire[0])}가 리타이어를 ${topRetire[1].retires}번 기록했어요.</div></div><div>${driverChip(topRetire[0])}</div></div>`);
-  if(topSprint) funLines.push(`<div class="participant-item"><div><div class="name">스프린트 최강자</div><div class="meta">${escapeHtml(topSprint[0])}가 스프린트에서 ${(topSprint[1].sprintWins||0)}번 1위를 기록했고, 스프린트 누적 ${(topSprint[1].sprintPoints||0)}점을 가져갔어요.</div></div><div>${driverChip(topSprint[0])}</div></div>`);
-  seasonStory.innerHTML = funLines.length ? funLines.join('') : '<div class="empty">아직 시즌 통계를 보여줄 데이터가 없습니다.</div>';
+  document.getElementById('story-sprint-sub').innerHTML = topSprint ? `SPR ${topSprint[1].sprintPoints||0}점 · 스프린트 ${(topSprint[1].sprintWins||0)}승 <span class="tag">SATURDAY KING</span>` : '스프린트 포인트 기준';
 
   if(!ranked.length){
+
     driverStatsTable.innerHTML = '<div class="empty">드라이버 챔피언십을 보여줄 결과 데이터가 아직 없습니다.</div>';
     constructorStatsTable.innerHTML = '<div class="empty">컨스트럭터 챔피언십을 보여줄 결과 데이터가 아직 없습니다.</div>';
     return;
@@ -1847,4 +1905,4 @@ function escapeAttr(s){
 initializeSync();
 </script>
 </body>
-</html> 
+</html>
