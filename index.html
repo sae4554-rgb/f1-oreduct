@@ -1156,12 +1156,8 @@ function syncPreviewFromResult(){
   const retired = document.getElementById('retired-drivers');
   if(retired){
     const retiredSet = new Set(Array.isArray(existing.retired) ? existing.retired : []);
-    Array.from(retired.options).forEach(opt=>{
-      opt.selected = false;
-    });
-    retired.selectedIndex = -1;
-    Array.from(retired.options).forEach(opt=>{
-      if(retiredSet.has(opt.value)) opt.selected = true;
+    Array.from(retired.options).forEach(opt => {
+      opt.selected = retiredSet.has(opt.value);
     });
   }
 }
@@ -1396,28 +1392,63 @@ function renderPredList(){
 }
 
 function getSelectedRetired(){
-  return Array.from(document.getElementById('retired-drivers').selectedOptions).map(o=>o.value);
+  const el = document.getElementById('retired-drivers');
+  if(!el) return [];
+  return [...new Set(Array.from(el.selectedOptions).map(o => o.value).filter(Boolean))];
 }
 
 function saveResult(){
   const round = document.getElementById('res-round').value;
-  if(!round){ alert('라운드를 먼저 선택하세요.'); return; }
+  if(!round){ 
+    alert('라운드를 먼저 선택하세요.'); 
+    return; 
+  }
+
   const picks = [];
-  for(let i=1;i<=20;i++) picks.push(document.getElementById('r'+i).value);
+  for(let i=1;i<=20;i++){
+    picks.push(document.getElementById('r'+i).value);
+  }
+
   const filled = picks.filter(Boolean);
-  if(filled.length !== 20){ alert('1위부터 20위까지 모두 입력하세요.'); return; }
-  if(new Set(filled).size !== filled.length){ alert('결과에서 같은 드라이버를 중복 선택할 수 없습니다.'); return; }
+  if(filled.length !== 20){ 
+    alert('1위부터 20위까지 모두 입력하세요.'); 
+    return; 
+  }
+
+  if(new Set(filled).size !== filled.length){ 
+    alert('결과에서 같은 드라이버를 중복 선택할 수 없습니다.'); 
+    return; 
+  }
 
   const sprintPicks = [];
-  for(let i=1;i<=8;i++) sprintPicks.push(document.getElementById('sr'+i)?.value || '');
-  const sprintFilled = sprintPicks.filter(Boolean);
-  if(sprintFilled.length && sprintFilled.length !== 8){ alert('스프린트 결과를 반영하려면 1위부터 8위까지 모두 입력하세요.'); return; }
-  if(new Set(sprintFilled).size !== sprintFilled.length){ alert('스프린트 결과에서 같은 드라이버를 중복 선택할 수 없습니다.'); return; }
+  for(let i=1;i<=8;i++){
+    sprintPicks.push(document.getElementById('sr'+i)?.value || '');
+  }
 
-  const retired = getSelectedRetired().filter(d=>!filled.includes(d) && !sprintFilled.includes(d));
+  const sprintFilled = sprintPicks.filter(Boolean);
+  if(sprintFilled.length && sprintFilled.length !== 8){ 
+    alert('스프린트 결과를 반영하려면 1위부터 8위까지 모두 입력하세요.'); 
+    return; 
+  }
+
+  if(new Set(sprintFilled).size !== sprintFilled.length){ 
+    alert('스프린트 결과에서 같은 드라이버를 중복 선택할 수 없습니다.'); 
+    return; 
+  }
+
+  const retired = [...new Set(getSelectedRetired())];
+
   const prev = state.results[round] || {};
   const now = Date.now();
-  state.results[round] = { order: picks, retired, sprintOrder: sprintFilled.length ? sprintPicks : Array(8).fill(''), updatedAt: now, createdAt: prev.createdAt || now };
+
+  state.results[round] = {
+    order: picks,
+    retired,
+    sprintOrder: sprintFilled.length ? sprintPicks : Array(8).fill(''),
+    updatedAt: now,
+    createdAt: prev.createdAt || now
+  };
+
   recalcAll();
   showResultSummary(round);
   syncPreviewFromResult();
