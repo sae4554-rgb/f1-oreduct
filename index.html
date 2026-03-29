@@ -341,18 +341,21 @@ tr:hover td{background:rgba(255,255,255,.015)}
 .reset-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 
 
-.cheer-summary-simple{display:grid;gap:10px}
+.cheer-summary-simple{display:grid;gap:12px}
 .cheer-rank-row{
-  display:grid;grid-template-columns:38px minmax(0,1fr) minmax(56px,auto);gap:10px;align-items:center;
-  padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)
+  display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:12px;align-items:center;
+  padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)
 }
 .cheer-rank-row:last-child{border-bottom:none}
-.cheer-rank-pos{font-size:18px;font-weight:900;text-align:center}
-.cheer-rank-name{font-size:16px;font-weight:900;line-height:1.25;word-break:break-word}
-.cheer-rank-meta{font-size:12px;color:#95a0c5}
-.cheer-rank-score{justify-self:end;text-align:right;min-width:56px}
-.cheer-rank-score .num{font-size:20px;font-weight:900;color:var(--cyan);line-height:1}
-.cheer-rank-score .lbl{font-size:11px;color:#95a0c5;letter-spacing:.08em;text-transform:uppercase}
+.cheer-rank-pos{font-size:28px;font-weight:900;line-height:1;text-align:center}
+.cheer-rank-name{
+  font-size:22px;font-weight:900;line-height:1.2;
+  white-space:normal;word-break:keep-all;overflow-wrap:anywhere
+}
+.cheer-rank-meta{margin-top:6px;font-size:12px;color:#95a0c5;line-height:1.5}
+.cheer-rank-score{text-align:right;min-width:72px}
+.cheer-rank-score .num{font-size:38px;font-weight:900;color:var(--cyan);line-height:1}
+.cheer-rank-score .lbl{margin-top:4px;font-size:11px;color:#95a0c5;letter-spacing:.08em;text-transform:uppercase}
 
 @media (max-width: 1100px){
   .grid.two,.history-grid,.long-grid,.history-main-grid,.player-round-grid{grid-template-columns:1fr}
@@ -413,15 +416,16 @@ tr:hover td{background:rgba(255,255,255,.015)}
   .cheer-target-grid{grid-template-columns:1fr}
   .cheer-highlight{grid-template-columns:1fr}
   .cheer-feed-card{max-height:none}
-  .cheer-feed{max-height:58vh;padding-right:2px}
+  .cheer-feed{max-height:320px;padding-right:2px}
   .round-summary-list,.cheer-highlight{grid-template-columns:1fr}
   .round-summary-stats{grid-template-columns:1fr}
 }
 @media (max-width: 560px){
-  .cheer-rank-row{grid-template-columns:30px minmax(0,1fr) 52px;gap:8px}
-  .cheer-rank-name{font-size:14px}
+  .cheer-rank-row{grid-template-columns:38px minmax(0,1fr);gap:10px}
+  .cheer-rank-name{font-size:18px}
   .cheer-rank-meta{font-size:11px}
-  .cheer-rank-score .num{font-size:17px}
+  .cheer-rank-score{grid-column:2;text-align:left;min-width:0}
+  .cheer-rank-score .num{font-size:28px}
   .round-summary-name{font-size:15px}
 }
 
@@ -429,7 +433,12 @@ tr:hover td{background:rgba(255,255,255,.015)}
 .cheer-composer .row{align-items:flex-start}
 .cheer-target-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .cheer-feed-card{display:flex;flex-direction:column}
-.cheer-feed{display:flex;flex-direction:column;gap:10px;overflow:auto;max-height:56vh;padding-right:4px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.cheer-feed{display:flex;flex-direction:column;gap:10px;overflow-y:auto;overflow-x:hidden;max-height:420px;padding-right:6px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.cheer-feed::-webkit-scrollbar{width:8px}
+.cheer-feed::-webkit-scrollbar-track{background:#0b1020;border-radius:999px}
+.cheer-feed::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:999px}
+.cheer-item.is-new{animation:cheerFeedIn .45s ease}
+@keyframes cheerFeedIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
 .cheer-item{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.02)}
 .cheer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap}
 .cheer-name{font-size:14px;font-weight:900;line-height:1.35;word-break:break-word;overflow-wrap:anywhere}
@@ -456,10 +465,17 @@ tr:hover td{background:rgba(255,255,255,.015)}
 .round-summary-stat .k{font-size:11px;color:#95a0c5;margin-bottom:6px}
 .round-summary-stat .v{font-size:18px;font-weight:900;line-height:1.1}
 .cheer-highlight{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
-.cheer-highlight-card{border:1px solid var(--line);border-radius:18px;padding:14px;background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));min-height:100%}
-.cheer-highlight-card .k{font-size:11px;color:var(--muted);margin-bottom:8px}
-.cheer-highlight-card .v{font-size:24px;font-weight:900;line-height:1.2;word-break:break-word}
-.cheer-highlight-card .d{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
+.cheer-highlight-card{
+  border:1px solid var(--line);border-radius:18px;padding:16px;
+  background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+  min-height:100%;overflow:hidden
+}
+.cheer-highlight-card .k{font-size:12px;color:var(--muted);margin-bottom:10px;font-weight:800}
+.cheer-highlight-card .v{
+  font-size:24px;font-weight:900;line-height:1.2;
+  word-break:keep-all;overflow-wrap:anywhere
+}
+.cheer-highlight-card .d{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6}
 .cheer-highlight-card .stack{margin-top:10px}
 
 </style>
@@ -1259,6 +1275,9 @@ function formatCheerTime(ts){
   const mi = String(d.getMinutes()).padStart(2,'0');
   return `${mm}.${dd} ${hh}:${mi}`;
 }
+function getCheerItemKey(item, roundName=''){
+  return `${roundName}__${item.name || ''}__${item.targetValue || ''}__${item.createdAt || 0}__${item.message || ''}`;
+}
 function getCheerTargetLabel(item){
   return `드라이버 · ${item.targetValue || '-'}`;
 }
@@ -1311,7 +1330,10 @@ function renderCheerboard(){
               <div class="cheer-rank-name">${escapeHtml(entry.name)}</div>
               <div class="cheer-rank-meta">최근 응원 ${formatCheerTime(entry.latest)}</div>
             </div>
-            <div class="cheer-rank-score"><div class="num">${entry.count}</div><div class="lbl">CHEERS</div></div>
+            <div class="cheer-rank-score">
+              <div class="num">${entry.count}</div>
+              <div class="lbl">CHEERS</div>
+            </div>
           </div>
         `).join('') : '<div class="cheer-empty">아직 응원 메시지가 없어요.</div>'}
       </div>
@@ -1333,11 +1355,15 @@ function renderCheerboard(){
     </div>
   `;
   document.getElementById('cheer-feed-note').textContent = allItems.length ? `전체 라운드 응원이 최신순으로 정렬되어 있어요. 선택한 라운드는 ${round} 입니다.` : '응원 메시지가 아직 없어요.';
+  const newestKey = allItems.length ? getCheerItemKey(allItems[0], allItems[0].roundName || '') : '';
+  const animateKey = newestKey && newestKey !== lastRenderedCheerTopKey ? newestKey : '';
+  lastRenderedCheerTopKey = newestKey;
   const feed = document.getElementById('cheer-feed');
   feed.innerHTML = allItems.length ? allItems.map(item=>{
+    const itemKey = getCheerItemKey(item, item.roundName || '');
     const isDriver = item.targetType === 'driver' && DRIVER_MAP[item.targetValue];
     const targetMarkup = isDriver ? driverChip(item.targetValue) : `<span class="mini-pill">${escapeHtml(getCheerTargetLabel(item))}</span>`;
-    return `<div class="cheer-item">
+    return `<div class="cheer-item ${itemKey===animateKey ? 'is-new' : ''}">
       <div class="cheer-head">
         <div>
           <div class="cheer-name">${escapeHtml(item.name)}</div>
