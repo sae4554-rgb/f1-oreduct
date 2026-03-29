@@ -343,14 +343,14 @@ tr:hover td{background:rgba(255,255,255,.015)}
 
 .cheer-summary-simple{display:grid;gap:10px}
 .cheer-rank-row{
-  display:grid;grid-template-columns:42px minmax(0,1fr) 70px;gap:10px;align-items:center;
+  display:grid;grid-template-columns:38px minmax(0,1fr) minmax(56px,auto);gap:10px;align-items:center;
   padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)
 }
 .cheer-rank-row:last-child{border-bottom:none}
 .cheer-rank-pos{font-size:18px;font-weight:900;text-align:center}
 .cheer-rank-name{font-size:16px;font-weight:900;line-height:1.25;word-break:break-word}
 .cheer-rank-meta{font-size:12px;color:#95a0c5}
-.cheer-rank-score{justify-self:end;text-align:right}
+.cheer-rank-score{justify-self:end;text-align:right;min-width:56px}
 .cheer-rank-score .num{font-size:20px;font-weight:900;color:var(--cyan);line-height:1}
 .cheer-rank-score .lbl{font-size:11px;color:#95a0c5;letter-spacing:.08em;text-transform:uppercase}
 
@@ -414,7 +414,17 @@ tr:hover td{background:rgba(255,255,255,.015)}
   .cheer-highlight{grid-template-columns:1fr}
   .cheer-feed-card{max-height:none}
   .cheer-feed{max-height:58vh;padding-right:2px}
+  .round-summary-list,.cheer-highlight{grid-template-columns:1fr}
+  .round-summary-stats{grid-template-columns:1fr}
 }
+@media (max-width: 560px){
+  .cheer-rank-row{grid-template-columns:30px minmax(0,1fr) 52px;gap:8px}
+  .cheer-rank-name{font-size:14px}
+  .cheer-rank-meta{font-size:11px}
+  .cheer-rank-score .num{font-size:17px}
+  .round-summary-name{font-size:15px}
+}
+
 .cheer-layout{display:grid;grid-template-columns:1fr;gap:14px}
 .cheer-composer .row{align-items:flex-start}
 .cheer-target-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -434,6 +444,24 @@ tr:hover td{background:rgba(255,255,255,.015)}
 .cheer-quick{display:flex;flex-wrap:wrap;gap:8px}
 .cheer-quick button{padding:8px 10px;border-radius:999px}
 .cheer-empty{padding:22px 12px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:14px}
+
+.round-summary-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+.round-summary-card{border:1px solid var(--line);background:rgba(255,255,255,.02);padding:14px 16px;border-radius:18px;display:grid;gap:10px}
+.round-summary-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.round-summary-name{font-size:16px;font-weight:900;line-height:1.25}
+.round-summary-meta{font-size:12px;color:var(--muted);line-height:1.5}
+.round-summary-picks{display:flex;flex-wrap:wrap;gap:8px}
+.round-summary-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.round-summary-stat{border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.025);padding:10px 12px;border-radius:14px}
+.round-summary-stat .k{font-size:11px;color:#95a0c5;margin-bottom:6px}
+.round-summary-stat .v{font-size:18px;font-weight:900;line-height:1.1}
+.cheer-highlight{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.cheer-highlight-card{border:1px solid var(--line);border-radius:18px;padding:14px;background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));min-height:100%}
+.cheer-highlight-card .k{font-size:11px;color:var(--muted);margin-bottom:8px}
+.cheer-highlight-card .v{font-size:24px;font-weight:900;line-height:1.2;word-break:break-word}
+.cheer-highlight-card .d{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
+.cheer-highlight-card .stack{margin-top:10px}
+
 </style>
 </head>
 <body>
@@ -541,6 +569,13 @@ tr:hover td{background:rgba(255,255,255,.015)}
   <section id="predictdash" class="section">
     <div class="section-title">실시간 예측 대시보드</div>
     <p class="sub">가장 최근에 추가된 라운드 기준으로 누가 참가했고, 어떤 드라이버가 얼마나 많이 선택됐는지 실시간으로 보여줍니다.</p>
+
+    <div class="card soft">
+      <div class="card-title">지난 라운드 전체 예측</div>
+      <div class="note">이전 라운드별로 누가 예측에 참여했는지와 각 라운드의 전체 예측 흐름을 상단에서 바로 확인할 수 있어요.</div>
+      <div class="round-summary-list" id="prediction-round-summary"></div>
+    </div>
+
     <div class="grid three">
       <div class="broadcast-card">
         <div class="broadcast-head"><div class="broadcast-title">LATEST ROUND</div><div class="mini-pill" id="dash-round">-</div></div>
@@ -572,18 +607,19 @@ tr:hover td{background:rgba(255,255,255,.015)}
         </div>
       </div>
     </div>
+
   </section>
 
     <section id="cheer" class="section">
     <div class="section-title">응원 / 팬존</div>
-    <p class="sub">이번 라운드에 한마디를 남겨보세요. 모바일에서 보기 편하게 피드 안에서만 스크롤되도록 만들었습니다.</p>
+    <p class="sub">응원은 라운드별로 남기고, 피드에서는 지난 라운드까지 포함한 전체 응원을 한 번에 볼 수 있습니다.</p>
 
     <div class="cheer-highlight" id="cheer-highlight"></div>
 
     <div class="cheer-layout">
       <div class="card soft cheer-feed-card">
         <div class="card-title">실시간 응원 피드</div>
-        <div class="note" id="cheer-feed-note">최신 응원이 위로 올라오고, 이 카드 안에서만 길게 스크롤해서 볼 수 있어요.</div>
+        <div class="note" id="cheer-feed-note">최신순으로 정렬된 전체 라운드 응원이 한 번에 보여집니다.</div>
         <div class="cheer-feed" id="cheer-feed"></div>
       </div>
 
@@ -1255,15 +1291,19 @@ function getOverallCheerLeaders(){
 function renderCheerboard(){
   populateCheerTargets();
   const round = getCheerRound();
-  const items = [...(state.cheers[round] || [])].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  const selectedItems = [...(state.cheers[round] || [])].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  const allItems = Object.entries(state.cheers || {}).flatMap(([roundName, items]) =>
+    (items || []).map(item => ({...item, roundName}))
+  ).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+
   const summary = getCheerSummary(round);
   const leaders = getOverallCheerLeaders();
   const highlight = document.getElementById('cheer-highlight');
   highlight.innerHTML = `
-    <div class="card soft" style="margin-bottom:0">
-      <div class="card-title">시즌 응원왕</div>
-      <div class="note">전체 라운드 누적 응원 기준 TOP 3</div>
-      <div class="cheer-summary-simple">
+    <div class="cheer-highlight-card">
+      <div class="k">시즌 응원왕</div>
+      <div class="d">전체 라운드 누적 응원 기준 TOP 3</div>
+      <div class="cheer-summary-simple" style="margin-top:10px">
         ${leaders.length ? leaders.map((entry, idx)=>`
           <div class="cheer-rank-row">
             <div class="cheer-rank-pos">${idx+1}</div>
@@ -1276,17 +1316,32 @@ function renderCheerboard(){
         `).join('') : '<div class="cheer-empty">아직 응원 메시지가 없어요.</div>'}
       </div>
     </div>
+    <div class="cheer-highlight-card">
+      <div class="k">선택 라운드 요약</div>
+      <div class="v">${escapeHtml(round || '-')}</div>
+      <div class="d">이 라운드에는 총 ${summary.total}개의 응원이 모였고, ${summary.uniqueFans}명이 참여했어요.</div>
+      <div class="stack">
+        <span class="mini-pill">응원 수 ${summary.total}</span>
+        <span class="mini-pill">참여자 ${summary.uniqueFans}명</span>
+      </div>
+    </div>
+    <div class="cheer-highlight-card">
+      <div class="k">이 라운드 최다 응원 드라이버</div>
+      <div class="v">${escapeHtml(summary.topDriver ? summary.topDriver[0] : '-')}</div>
+      <div class="d">${summary.topDriver ? `${summary.topDriver[1]}개의 응원을 받았어요.` : '아직 선택된 드라이버 응원이 없어요.'}</div>
+      <div class="stack">${summary.topDriver ? `${driverChip(summary.topDriver[0])}<span class="mini-pill">${summary.topDriver[1]} CHEERS</span>` : '<span class="mini-pill">데이터 없음</span>'}</div>
+    </div>
   `;
-  document.getElementById('cheer-feed-note').textContent = round ? `${round} 응원 피드예요. 카드 안에서만 스크롤돼서 모바일에서도 보기 편해요.` : '라운드를 선택하면 응원 피드가 보여요.';
+  document.getElementById('cheer-feed-note').textContent = allItems.length ? `전체 라운드 응원이 최신순으로 정렬되어 있어요. 선택한 라운드는 ${round} 입니다.` : '응원 메시지가 아직 없어요.';
   const feed = document.getElementById('cheer-feed');
-  feed.innerHTML = items.length ? items.map(item=>{
+  feed.innerHTML = allItems.length ? allItems.map(item=>{
     const isDriver = item.targetType === 'driver' && DRIVER_MAP[item.targetValue];
     const targetMarkup = isDriver ? driverChip(item.targetValue) : `<span class="mini-pill">${escapeHtml(getCheerTargetLabel(item))}</span>`;
     return `<div class="cheer-item">
       <div class="cheer-head">
         <div>
           <div class="cheer-name">${escapeHtml(item.name)}</div>
-          <div class="cheer-meta"><span>${escapeHtml(round)}</span><span>·</span><span>${formatCheerTime(item.createdAt)}</span></div>
+          <div class="cheer-meta"><span>${escapeHtml(item.roundName || '-')}</span><span>·</span><span>${formatCheerTime(item.createdAt)}</span></div>
         </div>
         ${targetMarkup}
       </div>
@@ -1295,7 +1350,6 @@ function renderCheerboard(){
     </div>`;
   }).join('') : '<div class="cheer-empty">아직 응원 메시지가 없어요. 첫 번째 응원을 남겨보세요 📣</div>';
 }
-
 
 function addPlayer(){
   const input = document.getElementById('new-player');
@@ -1619,7 +1673,7 @@ function renderPredictDashboard(){
   document.getElementById('dash-top-p1-count').textContent = bestP1 ? `선택 ${bestP1[1]}회` : '선택 0회';
 
   const freq = {};
-  entries.forEach(([, picks]) => picks.forEach(d => { freq[d] = (freq[d]||0)+1; }));
+  entries.forEach(([, picks]) => picks.forEach(d => { if(d) freq[d] = (freq[d]||0)+1; }));
   const sortedDrivers = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,8);
   const maxCount = sortedDrivers.length ? sortedDrivers[0][1] : 1;
   const cards = document.getElementById('driver-ranking-cards');
@@ -1664,6 +1718,51 @@ function renderPredictDashboard(){
     </div>`;
   }).join('');
   breakdown.innerHTML = positionHtml;
+
+  const summaryRoot = document.getElementById('prediction-round-summary');
+  if(summaryRoot){
+    const roundCards = [...state.rounds].slice().reverse().map(roundName=>{
+      const roundPreds = state.predictions[roundName] || {};
+      const roundEntries = Object.entries(roundPreds);
+      if(!roundEntries.length) return '';
+      const p1Counts = {};
+      const totalCounts = {};
+      roundEntries.forEach(([, picks])=>{
+        picks.forEach(driver=>{ if(driver) totalCounts[driver] = (totalCounts[driver]||0) + 1; });
+        if(picks[0]) p1Counts[picks[0]] = (p1Counts[picks[0]]||0) + 1;
+      });
+      const topWinner = Object.entries(p1Counts).sort((a,b)=>b[1]-a[1])[0];
+      const topOverall = Object.entries(totalCounts).sort((a,b)=>b[1]-a[1]).slice(0,3);
+      return `<div class="round-summary-card">
+        <div class="round-summary-head">
+          <div>
+            <div class="round-summary-name">${escapeHtml(roundName)}</div>
+            <div class="round-summary-meta">예측 제출 ${roundEntries.length}명</div>
+          </div>
+          <span class="mini-pill">${roundName === round ? 'LATEST' : 'ARCHIVE'}</span>
+        </div>
+        <div class="round-summary-stats">
+          <div class="round-summary-stat">
+            <div class="k">가장 많이 고른 우승</div>
+            <div class="v">${escapeHtml(topWinner ? topWinner[0] : '-')}</div>
+          </div>
+          <div class="round-summary-stat">
+            <div class="k">우승 픽 수</div>
+            <div class="v">${topWinner ? topWinner[1] : 0}표</div>
+          </div>
+          <div class="round-summary-stat">
+            <div class="k">참가 인원</div>
+            <div class="v">${roundEntries.length}명</div>
+          </div>
+        </div>
+        <div>
+          <div class="round-summary-meta" style="margin-bottom:8px">가장 많이 등장한 드라이버</div>
+          <div class="round-summary-picks">${topOverall.length ? topOverall.map(([name,count])=>`${driverChip(name)}<span class="mini-pill">${count}회</span>`).join('') : '<span class="mini-pill">데이터 없음</span>'}</div>
+        </div>
+      </div>`;
+    }).filter(Boolean).join('');
+    summaryRoot.innerHTML = roundCards || '<div class="empty">아직 저장된 예측 라운드가 없습니다.</div>';
+  }
 }
 
 function computeDriverSeasonStats(){
